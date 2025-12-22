@@ -4,18 +4,18 @@ import path from 'path';
 
 export default defineConfig({
   plugins: [react()],
-  
+
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, './src') // Use @ for src
+      '@': path.resolve(__dirname, './src') // Add this line
     },
     extensions: ['.js', '.ts', '.jsx', '.tsx', '.json']
   },
 
   build: {
     target: 'esnext',
-    outDir: 'build',       // Must match Vercel Output Directory
-    sourcemap: false,      // Optional: disable source maps
+    outDir: 'build',        // Vercel output directory
+    sourcemap: false,
     minify: 'esbuild',
     rollupOptions: {
       output: {
