@@ -12,6 +12,11 @@
   "dependencies": {
     "vite": "^6.3.5",
     "@vitejs/plugin-react-swc": "^3.10.2",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "clsx": "^2.1.0",
+    "lucide-react": "^0.487.0",
+    "tailwind-merge": "^2.2.2",
     "@radix-ui/react-accordion": "^1.2.3",
     "@radix-ui/react-alert-dialog": "^1.1.6",
     "@radix-ui/react-aspect-ratio": "^1.1.2",
@@ -39,21 +44,16 @@
     "@radix-ui/react-toggle-group": "^1.1.2",
     "@radix-ui/react-tooltip": "^1.1.8",
     "class-variance-authority": "^0.7.1",
-    "clsx": "^2.1.0",
     "cmdk": "^1.1.1",
     "embla-carousel-react": "^8.6.0",
     "input-otp": "^1.4.2",
-    "lucide-react": "^0.487.0",
     "motion": "^11.0.0",
     "next-themes": "^0.4.6",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
     "react-day-picker": "^8.10.1",
     "react-hook-form": "^7.55.0",
     "react-resizable-panels": "^2.1.7",
     "recharts": "^2.15.2",
     "sonner": "^2.0.3",
-    "tailwind-merge": "^2.2.2",
     "vaul": "^1.1.2"
   },
 
@@ -67,11 +67,5 @@
   "engines": {
     "node": "20.x",
     "npm": ">=9"
-  },
-
-  "vite": {
-    "build": {
-      "outDir": "build"
-    }
   }
 }

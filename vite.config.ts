@@ -4,7 +4,7 @@ import path from 'path';
 
 export default defineConfig({
   plugins: [react()],
-
+  
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src') // Use @ for src
@@ -14,12 +14,12 @@ export default defineConfig({
 
   build: {
     target: 'esnext',
-    outDir: 'build',  // Vercel deployment directory
-    sourcemap: false, // Optional: disable source maps for production
-    minify: 'esbuild', // Default minifier
+    outDir: 'build',       // Must match Vercel Output Directory
+    sourcemap: false,      // Optional: disable source maps
+    minify: 'esbuild',
     rollupOptions: {
       output: {
-        manualChunks: undefined // Let Vite handle code splitting
+        manualChunks: undefined
       }
     }
   },
