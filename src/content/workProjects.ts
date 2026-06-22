@@ -11,36 +11,6 @@ export interface WorkProject {
   notes?: string;
 }
 
-export interface WorkProjectCategory {
-  id: WorkProjectType;
-  title: string;
-  description: string;
-  accent: string;
-}
-
-export const workProjectTypes: WorkProjectType[] = ['Web App', 'SaaS', 'Website'];
-
-export const workProjectCategories: WorkProjectCategory[] = [
-  {
-    id: 'Web App',
-    title: 'Web Apps',
-    description: 'Niche utility apps and micro-tools with 5K–10K monthly traffic — built for speed, clarity, and repeat use.',
-    accent: '#155eef',
-  },
-  {
-    id: 'SaaS',
-    title: 'SaaS Products',
-    description: 'B2B and B2C subscription platforms with growing traffic — product systems designed around repeatable workflows.',
-    accent: '#7f56d9',
-  },
-  {
-    id: 'Website',
-    title: 'Websites',
-    description: 'Niche web platforms, directories, and tools — public-facing experiences optimized for discovery and conversion.',
-    accent: '#0f9f8f',
-  },
-];
-
 export const workProjects: WorkProject[] = [
   { id: 'fontspark', projectName: 'FontSpark', type: 'Web App', websiteUrl: 'https://fontspark.app', industry: 'Design', serviceCategory: 'Font Discovery', traffic: '~5,200', notes: 'Font pairing generator; viral shares on Twitter/X and Dribbble' },
   { id: 'shipfast', projectName: 'ShipFast', type: 'Web App', websiteUrl: 'https://shipfa.st', industry: 'Developer Tools', serviceCategory: 'Next.js Boilerplate', traffic: '~5,800', notes: 'Next.js SaaS starter kit; massive maker community referrals' },
@@ -129,13 +99,5 @@ export const workProjects: WorkProject[] = [
 
 export const workProjectStats = {
   total: workProjects.length,
-  apps: workProjects.filter((project) => project.type === 'Web App').length,
-  saas: workProjects.filter((project) => project.type === 'SaaS').length,
-  websites: workProjects.filter((project) => project.type === 'Website').length,
   industries: new Set(workProjects.map((project) => project.industry)).size,
 };
-
-export function getWorkProjectIndustries(type?: WorkProjectType) {
-  const pool = type ? workProjects.filter((project) => project.type === type) : workProjects;
-  return [...new Set(pool.map((project) => project.industry))].sort();
-}

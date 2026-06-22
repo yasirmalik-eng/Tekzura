@@ -133,6 +133,11 @@ export default function Chatbot() {
   const inputRef = useRef<HTMLInputElement>(null);
   const panelId = 'tekzura-chat-panel';
 
+  function closeChat() {
+    setOpen(false);
+    setExpanded(false);
+  }
+
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' });
   }, [messages, sending, showLead, leadSent]);
@@ -142,10 +147,15 @@ export default function Chatbot() {
   }, [open]);
 
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setOpen(false); };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        if (expanded && !isMobile) setExpanded(false);
+        else closeChat();
+      }
+    };
     if (open) window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [open]);
+  }, [open, expanded, isMobile]);
 
   useEffect(() => {
     const onOpen = () => setOpen(true);
@@ -168,8 +178,7 @@ export default function Chatbot() {
   }, [open, expanded, isMobile]);
 
   function goTo(path: string) {
-    setOpen(false);
-    setExpanded(false);
+    closeChat();
     navigate(path);
   }
 
@@ -232,21 +241,21 @@ export default function Chatbot() {
 
   const widget = (
     <div className="chat-widget-host">
-      <button
-        type="button"
-        className={`chat-fab${open ? ' is-open' : ''}`}
-        aria-expanded={open}
-        aria-controls={panelId}
-        aria-label={open ? 'Close chat' : 'Open AI assistant'}
-        onClick={() => setOpen((v) => !v)}
-      >
-        {open ? <X aria-hidden="true" /> : (
+      {!open && (
+        <button
+          type="button"
+          className="chat-fab"
+          aria-expanded={false}
+          aria-controls={panelId}
+          aria-label="Open AI assistant"
+          onClick={() => setOpen(true)}
+        >
           <TekzuraAvatar className="tekzura-chat-avatar-fab" />
-        )}
-      </button>
+        </button>
+      )}
 
       {open && (expanded || isMobile) && (
-        <div className="chat-backdrop" onClick={() => (isMobile ? setOpen(false) : setExpanded(false))} aria-hidden="true" />
+        <div className="chat-backdrop" onClick={() => (isMobile ? closeChat() : setExpanded(false))} aria-hidden="true" />
       )}
 
       {open && (
@@ -278,7 +287,7 @@ export default function Chatbot() {
             >
               {expanded ? <Minimize2 aria-hidden="true" /> : <Maximize2 aria-hidden="true" />}
             </button>
-            <button type="button" className="chat-icon-btn" aria-label="Close chat" onClick={() => setOpen(false)}>
+            <button type="button" className="chat-icon-btn" aria-label="Close chat" onClick={closeChat}>
               <X aria-hidden="true" />
             </button>
           </div>

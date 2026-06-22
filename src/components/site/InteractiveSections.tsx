@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import {
   ArrowRight,
-  BarChart3,
   Boxes,
   Check,
   ChevronDown,
@@ -11,7 +10,6 @@ import {
   Database,
   MessagesSquare,
   Rocket,
-  SearchCheck,
   Workflow,
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -422,51 +420,6 @@ export function CapabilityExplorer({ variant = 'directory' }: { variant?: 'direc
   );
 }
 
-const processItems = [
-  { icon: SearchCheck, title: 'Discover the constraint', text: 'We align on the audience, operating problem, evidence, and practical definition of success.' },
-  { icon: Boxes, title: 'Shape the right system', text: 'We turn the goal into a prioritized experience, technical approach, and reviewable roadmap.' },
-  { icon: Code2, title: 'Build in visible stages', text: 'Work moves through small milestones so decisions stay clear and feedback arrives while it is useful.' },
-  { icon: Rocket, title: 'Launch and improve', text: 'We validate the experience, prepare the handover, and identify the next highest-value improvement.' },
-];
-
-export function ProcessStory() {
-  const [active, setActive] = useState(0);
-  const ActiveIcon = processItems[active].icon;
-
-  return (
-    <section className="section process-story-section">
-      <div className="container process-story">
-        <div className="process-story-copy">
-          <p className="eyebrow eyebrow-light">How delivery works</p>
-          <h2>Structure that creates momentum, not overhead.</h2>
-          <p>Move through the stages to see how strategy, design, engineering, and handover stay connected.</p>
-          <div className="process-selector" role="tablist" aria-label="Delivery process">
-            {processItems.map((item, index) => (
-              <button
-                key={item.title}
-                type="button"
-                role="tab"
-                aria-selected={active === index}
-                onClick={() => setActive(index)}
-              >
-                <span>{String(index + 1).padStart(2, '0')}</span>{item.title}
-              </button>
-            ))}
-          </div>
-        </div>
-        <div className="process-stage" key={active}>
-          <div className="process-stage-grid" aria-hidden="true" />
-          <div className="process-stage-icon"><ActiveIcon aria-hidden="true" /></div>
-          <span>Stage {active + 1} of {processItems.length}</span>
-          <h3>{processItems[active].title}</h3>
-          <p>{processItems[active].text}</p>
-          <div className="process-progress"><i style={{ width: `${((active + 1) / processItems.length) * 100}%` }} /></div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
 const serviceProcessDetails = [
   {
     label: 'Align',
@@ -583,50 +536,6 @@ export function ServiceDeliveryProcess({ service }: { service: Service }) {
             <div className="service-process-progress" aria-hidden="true">
               <i style={{ transform: `scaleX(${(active + 1) / service.process.length})` }} />
             </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-const matcherOptions = [
-  { icon: CircuitBoard, label: 'Launch or rebuild a digital product', slug: 'web-development' as ServiceSlug },
-  { icon: Workflow, label: 'Reduce repetitive operational work', slug: 'automation-ai' as ServiceSlug },
-  { icon: BarChart3, label: 'Build a healthier sales pipeline', slug: 'lead-generation' as ServiceSlug },
-  { icon: MessagesSquare, label: 'Improve campaigns and visibility', slug: 'digital-marketing' as ServiceSlug },
-];
-
-export function ServiceMatcher() {
-  const [selected, setSelected] = useState<ServiceSlug>('web-development');
-  const service = services.find((item) => item.slug === selected)!;
-
-  return (
-    <section className="section matcher-section">
-      <div className="container matcher-grid">
-        <div>
-          <p className="eyebrow"></p>
-          <h2>What are you trying to improve?</h2>
-          <p>Select the closest goal. We will point you toward a useful first conversation.</p>
-          <div className="matcher-options">
-            {matcherOptions.map((option) => {
-              const Icon = option.icon;
-              return (
-                <button key={option.slug} type="button" aria-pressed={selected === option.slug} onClick={() => setSelected(option.slug)}>
-                  <Icon aria-hidden="true" /><span>{option.label}</span><ChevronRight aria-hidden="true" />
-                </button>
-              );
-            })}
-          </div>
-        </div>
-        <div className="matcher-result" key={selected}>
-          <span>Recommended starting point</span>
-          <service.icon aria-hidden="true" />
-          <h3>{service.title}</h3>
-          <p>{service.outcome}</p>
-          <div className="button-row">
-            <Link className="button button-primary" to={`/services/${service.slug}`}>View Service <ArrowRight aria-hidden="true" /></Link>
-            <Link className="button button-secondary" to="/contact">Discuss Your Goal</Link>
           </div>
         </div>
       </div>

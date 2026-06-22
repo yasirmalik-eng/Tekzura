@@ -25,8 +25,6 @@ const reasons = [
   },
 ];
 
-const ownershipStages = ['Strategy', 'Design', 'Development', 'Marketing', 'Growth'];
-
 export default function TrustSection() {
   return (
     <section className="section section-soft why-tekzura-section" aria-labelledby="why-tekzura-title">
@@ -61,11 +59,6 @@ export default function TrustSection() {
               <h3>One team owns the handoff from idea to revenue.</h3>
               <p>Strategy, design, engineering, marketing, and growth stay connected, so momentum does not get lost between vendors.</p>
             </div>
-            {/* <ol className="ownership-chain" aria-label="What Tekzura handles end to end">
-              {ownershipStages.map((stage) => (
-                <li key={stage}>{stage}</li>
-              ))}
-            </ol> */}
           </div>
         </Reveal>
       </div>

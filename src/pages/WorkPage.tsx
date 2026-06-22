@@ -1,17 +1,12 @@
 import { useMemo } from 'react';
-import { ArrowRight, BriefcaseBusiness, SlidersHorizontal } from 'lucide-react';
 import { useSearchParams } from 'react-router-dom';
 import ConversionCTA from '../components/site/ConversionCTA';
-import { CaseStudyCard, PageHero } from '../components/site/PageElements';
+import { PageHero } from '../components/site/PageElements';
 import Seo from '../components/site/Seo';
-import { WorkProjectCard } from '../components/site/WorkProjectCard';
 import { WorkProjectsDashboard } from '../components/site/WorkProjectsDashboard';
-import { caseStudies } from '../content/site';
 import {
   countWorkSectionCategory,
-  filterShowcaseProjects,
   getShowcaseCategoryView,
-  getShowcaseFilters,
   getShowcaseProjects,
   resolveWorkSectionCategoryId,
   workSectionCategories,
@@ -22,7 +17,6 @@ import {
 export default function WorkPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const activeCategoryId = resolveWorkSectionCategoryId(searchParams.get('category'));
-  const activeCategory = workSectionCategories.find((category) => category.id === activeCategoryId)!;
   const showcaseCategory = getShowcaseCategoryView(activeCategoryId);
 
   const showcaseProjects = useMemo(
@@ -30,24 +24,8 @@ export default function WorkPage() {
     [activeCategoryId],
   );
 
-  const filters = useMemo(() => getShowcaseFilters(showcaseProjects), [showcaseProjects]);
-
-  const requestedFilter = searchParams.get('filter');
-  const activeFilter = requestedFilter && filters.includes(requestedFilter) ? requestedFilter : 'All';
-
-  const filteredProjects = useMemo(
-    () => filterShowcaseProjects(showcaseProjects, activeFilter),
-    [activeFilter, showcaseProjects],
-  );
-
   function selectCategory(categoryId: WorkSectionCategoryId) {
     setSearchParams({ category: categoryId });
-  }
-
-  function selectFilter(filter: string) {
-    setSearchParams(
-      filter === 'All' ? { category: activeCategoryId } : { category: activeCategoryId, filter },
-    );
   }
 
   function moveCategory(currentIndex: number, direction: number) {
@@ -165,10 +143,6 @@ export default function WorkPage() {
           >
             <WorkProjectsDashboard category={showcaseCategory} projects={showcaseProjects} />
           </div>
-
-          
-
-         
         </div>
       </section>
 
@@ -179,23 +153,6 @@ export default function WorkPage() {
         bullets={['Project-fit review', 'Technical direction', 'Launch roadmap']}
         tone="dark"
       />
-
-      {/* <section className="section section-soft delivery-stories">
-        <div className="container">
-          <div className="work-intro">
-            <div>
-              <p className="eyebrow">Delivery stories</p>
-              <h2>The problem behind the polished interface.</h2>
-            </div>
-            <p>Selected examples with context around the challenge, approach, and intended business outcome.</p>
-          </div>
-          <div className="case-grid">
-            {caseStudies.map((item, index) => (
-              <CaseStudyCard key={item.title} item={item} index={index} expandable={false} />
-            ))}
-          </div>
-        </div>
-      </section> */}
     </>
   );
 }

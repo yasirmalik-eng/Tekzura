@@ -1,9 +1,8 @@
 import { ArrowRight, CalendarDays, CheckCircle2, MoveDown } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import { caseStudies, siteConfig, team, testimonials } from '../content/site';
-import { CaseStudyCard, SectionHeading } from '../components/site/PageElements';
+import { siteConfig, team, testimonials } from '../content/site';
+import { SectionHeading } from '../components/site/PageElements';
 import Seo from '../components/site/Seo';
-import { CapabilityExplorer, Reveal, ServiceMatcher } from '../components/site/InteractiveSections';
+import { CapabilityExplorer } from '../components/site/InteractiveSections';
 import { CommonQuestions, FounderSpotlight } from '../components/site/TeamSections';
 import TestimonialsCarousel from '../components/site/TestimonialsCarousel';
 import PortfolioStats from '../components/site/PortfolioStats';

@@ -1,9 +1,8 @@
 import { ArrowLeft, ArrowRight, CalendarDays } from 'lucide-react';
 import { Link, Navigate, useParams } from 'react-router-dom';
 import ConversionCTA from '../components/site/ConversionCTA';
-import { InsightCaseStudyCard } from '../components/site/InsightCaseStudyCard';
 import Seo from '../components/site/Seo';
-import { getInsightBySlug, getRelatedInsights } from '../content/insights';
+import { getInsightBySlug } from '../content/insights';
 import { services, siteConfig } from '../content/site';
 
 export default function CaseStudyDetailPage() {
@@ -15,7 +14,6 @@ export default function CaseStudyDetailPage() {
   }
 
   const service = services.find((entry) => entry.slug === study.service);
-  const related = getRelatedInsights(study.slug);
   const formattedDate = new Intl.DateTimeFormat('en', { dateStyle: 'long' }).format(
     new Date(`${study.date}T00:00:00`),
   );
@@ -110,22 +108,6 @@ export default function CaseStudyDetailPage() {
           </aside>
         </div>
       </section>
-
-      {/* {related.length > 0 && (
-        <section className="section section-soft">
-          <div className="container">
-            <div className="section-heading">
-              <p className="eyebrow">Related case studies</p>
-              <h2>More projects and insights</h2>
-            </div>
-            <div className="case-grid">
-              {related.map((item, index) => (
-                <InsightCaseStudyCard key={item.slug} item={item} index={index} />
-              ))}
-            </div>
-          </div>
-        </section>
-      )} */}
 
       <ConversionCTA
         eyebrow="Apply the thinking"

@@ -17,7 +17,7 @@ import { Link } from 'react-router-dom';
 import ConversionCTA from '../components/site/ConversionCTA';
 import { SectionHeading } from '../components/site/PageElements';
 import Seo from '../components/site/Seo';
-import { services, siteConfig, team } from '../content/site';
+import { siteConfig, team } from '../content/site';
 import { CommonQuestions, TeamShowcase } from '../components/site/TeamSections';
 
 const companyStats = [

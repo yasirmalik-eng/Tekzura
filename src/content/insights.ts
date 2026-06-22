@@ -417,11 +417,3 @@ export const insightCaseStudies: InsightCaseStudy[] = [...blogDerived, ...projec
 export function getInsightBySlug(slug: string) {
   return insightCaseStudies.find((study) => study.slug === slug);
 }
-
-export function getRelatedInsights(currentSlug: string, limit = 3) {
-  const current = getInsightBySlug(currentSlug);
-  if (!current) return insightCaseStudies.filter((study) => study.slug !== currentSlug).slice(0, limit);
-  return insightCaseStudies
-    .filter((study) => study.slug !== currentSlug && (study.service === current.service || study.category === current.category))
-    .slice(0, limit);
-}

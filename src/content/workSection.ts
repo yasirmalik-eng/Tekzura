@@ -140,10 +140,6 @@ export function resolveWorkSectionCategoryId(value: string | null): WorkSectionC
   return workSectionCategories[0].id;
 }
 
-export function isWorkSectionCategoryId(value: string | null): value is WorkSectionCategoryId {
-  return workSectionCategories.some((category) => category.id === value);
-}
-
 export function getShowcaseCategoryView(categoryId: WorkSectionCategoryId): ShowcaseCategoryView {
   const category = workSectionCategories.find((item) => item.id === categoryId)!;
   const hasClient = category.clientIds.length > 0;
@@ -180,13 +176,4 @@ export function getShowcaseProjects(categoryId: WorkSectionCategoryId): Showcase
 
 export function countWorkSectionCategory(categoryId: WorkSectionCategoryId) {
   return getShowcaseProjects(categoryId).length;
-}
-
-export function getShowcaseFilters(projects: ShowcaseProject[]) {
-  return ['All', ...[...new Set(projects.map((project) => project.industry))].sort()];
-}
-
-export function filterShowcaseProjects(projects: ShowcaseProject[], filter: string) {
-  if (filter === 'All') return projects;
-  return projects.filter((project) => project.industry === filter);
 }
