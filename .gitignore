@@ -11,4 +11,5 @@ build/
 *.png
 !public/tekzura-mark.png
 !public/favicon.png
+!public/chatbot/avatar.png
 !design-assets/logo-original.png
