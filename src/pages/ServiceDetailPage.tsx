@@ -27,14 +27,14 @@ export default function ServiceDetailPage() {
       <PageHero
         eyebrow={service.eyebrow}
         title={service.title}
-        description={service.summary}
+        description={service.outcome}
         visual={service.image}
         visualAlt={service.imageAlt}
         theme="dark"
       >
         <div className="button-row">
           <a className="button button-primary" href={siteConfig.calendly} target="_blank" rel="noreferrer">
-            <CalendarDays aria-hidden="true" /> Discuss This Service
+            <CalendarDays aria-hidden="true" /> {service.cta}
           </a>
           <Link className="button button-secondary" to="/work">See Related Work <ArrowRight aria-hidden="true" /></Link>
         </div>
@@ -43,15 +43,15 @@ export default function ServiceDetailPage() {
       <section className="section service-overview-section">
         <div className="container problem-grid">
           <div className="service-icon-large"><Icon aria-hidden="true" /></div>
-          <article><p className="eyebrow">The challenge</p><h2>What this service helps solve</h2><p>{service.problem}</p></article>
-          <article><p className="eyebrow">The outcome</p><h2>What we work toward</h2><p>{service.outcome}</p></article>
+          <article><p className="eyebrow">Challenge</p><h2>What this fixes</h2><p>{service.problem}</p></article>
+          <article><p className="eyebrow">Outcome</p><h2>What you gain</h2><p>{service.outcome}</p></article>
         </div>
       </section>
 
       <section className="section section-soft service-scope-section">
         <div className="container two-column">
           <div>
-            <SectionHeading eyebrow="Typical scope" title="What we can deliver" description="The final scope is shaped around your priorities, current systems, and team." />
+            <SectionHeading eyebrow="" title="What we can deliver" description="Scope is shaped around priorities, current systems, budget, and speed to value." />
             <CheckList items={service.deliverables} />
           </div>
           <div className="technology-panel">
@@ -62,12 +62,28 @@ export default function ServiceDetailPage() {
         </div>
       </section>
 
+      <section className="section service-benefits-section">
+        <div className="container two-column">
+          <div>
+            <SectionHeading eyebrow="" title="Business value, not just deliverables" description="Each service is designed to improve conversion, clarity, speed, or operating leverage." />
+            <CheckList items={service.benefits} />
+          </div>
+          <div className="technology-panel impact-panel">
+            <h2>Expected impact</h2>
+            <p className="impact-statement">{service.impact}</p>
+            <a className="button button-primary" href={siteConfig.calendly} target="_blank" rel="noreferrer">
+              <CalendarDays aria-hidden="true" /> {service.cta}
+            </a>
+          </div>
+        </div>
+      </section>
+
       <ServiceDeliveryProcess service={service} />
 
       {relatedWork.length > 0 && (
         <section className="section section-ink">
           <div className="container related-work">
-            <div><p className="eyebrow eyebrow-light">Related example</p><h2>{relatedWork[0].title}</h2><p>{relatedWork[0].challenge}</p></div>
+            <div><p className="eyebrow eyebrow-light"></p><h2>{relatedWork[0].title}</h2><p>{relatedWork[0].challenge}</p></div>
             <div><h3>Our approach</h3><p>{relatedWork[0].solution}</p><h3>Intended outcome</h3><p>{relatedWork[0].outcome}</p></div>
           </div>
         </section>
@@ -75,7 +91,7 @@ export default function ServiceDetailPage() {
 
       <section className="section">
         <div className="container faq-layout">
-          <SectionHeading eyebrow="Common questions" title={`Planning a ${service.shortTitle.toLowerCase()} project`} />
+          <SectionHeading eyebrow="" title={`Planning a ${service.shortTitle.toLowerCase()} project`} />
           <div className="faq-list">
             {service.faq.map((item) => (
               <details key={item.question}><summary>{item.question}</summary><p>{item.answer}</p></details>

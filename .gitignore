@@ -1,6 +1,12 @@
 node_modules/
 .vite/
 *.log
+
+# Local environment files (keep .env.example tracked)
+.env
+.env.local
+.env.*.local
+.supabase/
 *.png
 !public/tekzura-mark.png
 !public/favicon.png

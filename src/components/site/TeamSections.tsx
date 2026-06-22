@@ -32,57 +32,112 @@ function TeamPortrait({ member }: { member: TeamMember }) {
   );
 }
 
-export function TeamShowcase() {
+interface TeamShowcaseProps {
+  eyebrow?: string;
+  title?: string;
+  description?: string;
+  variant?: 'default' | 'about';
+}
+
+function TeamMemberCard({ member, about }: { member: TeamMember; about?: boolean }) {
+  if (about) {
+    return (
+      <article className="team-profile is-about">
+        <div className="team-photo team-photo-md">
+          <TeamPortrait member={member} />
+        </div>
+        <div className="team-profile-copy">
+          <h3>{member.name}</h3>
+          <p className="team-role">{member.role}</p>
+          {member.linkedinUrl && (
+            <a
+              className="team-linkedin-sm"
+              href={member.linkedinUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`View ${member.name} on LinkedIn`}
+            >
+              <Linkedin aria-hidden="true" />
+            </a>
+          )}
+        </div>
+      </article>
+    );
+  }
+
   return (
-    <section className="section team-section">
+    <article className="team-profile">
+      <div className="team-photo">
+        <TeamPortrait member={member} />
+      </div>
+      <div className="team-profile-copy">
+        <p className="team-role">{member.role}</p>
+        <h3>{member.name}</h3>
+        <p>{member.bio}</p>
+        {member.linkedinUrl && (
+          <a
+            className="team-linkedin"
+            href={member.linkedinUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`View ${member.name} on LinkedIn`}
+          >
+            <Linkedin aria-hidden="true" /> View LinkedIn
+          </a>
+        )}
+      </div>
+    </article>
+  );
+}
+
+export function TeamShowcase({
+  eyebrow = 'Meet the team',
+  title = 'Specialists who work as one delivery team',
+  description = 'Strategy, engineering, automation, growth, content, and support stay connected from the first conversation through launch.',
+  variant = 'default',
+}: TeamShowcaseProps) {
+  const isAbout = variant === 'about';
+
+  return (
+    <section className={`section team-section${isAbout ? ' team-section-about' : ''}`}>
       <div className="container">
         <SectionHeading
-          eyebrow="Meet the team"
-          title="Specialists who work as one delivery team"
-          description="Strategy, engineering, automation, growth, content, and support stay connected from the first conversation through launch."
+          eyebrow={eyebrow}
+          title={title}
+          description={description}
+          align={isAbout ? 'center' : 'left'}
         />
-        <div className="team-groups">
-          {teamGroups.map((group) => {
-            const members = team.filter((member) => member.group === group);
-            if (!members.length) return null;
+        <div className={`team-groups${isAbout ? ' team-groups-about' : ''}`}>
+          {isAbout ? (
+            <div className="team-gallery team-gallery-about">
+              {team.map((member, index) => (
+                <Reveal key={member.name} delay={Math.min(index * 35, 210)}>
+                  <TeamMemberCard member={member} about />
+                </Reveal>
+              ))}
+            </div>
+          ) : (
+            teamGroups.map((group) => {
+              const members = team.filter((member) => member.group === group);
+              if (!members.length) return null;
 
-            return (
-              <section className="team-group" key={group} aria-labelledby={`team-group-${group.replace(/\W+/g, '-').toLowerCase()}`}>
-                <div className="team-group-heading">
-                  <h3 id={`team-group-${group.replace(/\W+/g, '-').toLowerCase()}`}>{group}</h3>
-                  <span>{members.length} {members.length === 1 ? 'member' : 'members'}</span>
-                </div>
-                <div className="team-gallery">
-                  {members.map((member, index) => (
-                    <Reveal key={member.name} delay={Math.min(index * 60, 240)}>
-                      <article className="team-profile">
-                        <div className="team-photo">
-                          <TeamPortrait member={member} />
-
-                        </div>
-                        <div className="team-profile-copy">
-                          <p className="team-role">{member.role}</p>
-                          <h3>{member.name}</h3>
-                          <p>{member.bio}</p>
-                          {member.linkedinUrl && (
-                            <a
-                              className="team-linkedin"
-                              href={member.linkedinUrl}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              aria-label={`View ${member.name} on LinkedIn`}
-                            >
-                              <Linkedin aria-hidden="true" /> View LinkedIn
-                            </a>
-                          )}
-                        </div>
-                      </article>
-                    </Reveal>
-                  ))}
-                </div>
-              </section>
-            );
-          })}
+              return (
+                <section className="team-group" key={group} aria-labelledby={`team-group-${group.replace(/\W+/g, '-').toLowerCase()}`}>
+                  <div className="team-group-heading">
+                    <h3 id={`team-group-${group.replace(/\W+/g, '-').toLowerCase()}`}>{group}</h3>
+                    <span>{members.length} {members.length === 1 ? 'member' : 'members'}</span>
+                  </div>
+                  <div className="team-gallery">
+                    {members.map((member, index) => (
+                      <Reveal key={member.name} delay={Math.min(index * 60, 240)}>
+                        <TeamMemberCard member={member} />
+                      </Reveal>
+                    ))}
+                  </div>
+                </section>
+              );
+            })
+          )}
         </div>
       </div>
     </section>
@@ -150,9 +205,9 @@ export function CommonQuestions() {
     <section className="section faq-section">
       <div className="container faq-layout">
         <div className="faq-intro">
-          <div className="faq-icon"><UsersRound aria-hidden="true" /></div>
+
           <SectionHeading
-            eyebrow="Common questions"
+            eyebrow=""
             title="Clear answers before the work begins"
             description="A good engagement starts with shared expectations. These are the questions clients most often ask during early conversations."
           />

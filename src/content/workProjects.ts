@@ -1,0 +1,141 @@
+export type WorkProjectType = 'Web App' | 'SaaS' | 'Website';
+
+export interface WorkProject {
+  id: string;
+  projectName: string;
+  type: WorkProjectType;
+  websiteUrl: string;
+  industry: string;
+  serviceCategory: string;
+  traffic?: string;
+  notes?: string;
+}
+
+export interface WorkProjectCategory {
+  id: WorkProjectType;
+  title: string;
+  description: string;
+  accent: string;
+}
+
+export const workProjectTypes: WorkProjectType[] = ['Web App', 'SaaS', 'Website'];
+
+export const workProjectCategories: WorkProjectCategory[] = [
+  {
+    id: 'Web App',
+    title: 'Web Apps',
+    description: 'Niche utility apps and micro-tools with 5K–10K monthly traffic — built for speed, clarity, and repeat use.',
+    accent: '#155eef',
+  },
+  {
+    id: 'SaaS',
+    title: 'SaaS Products',
+    description: 'B2B and B2C subscription platforms with growing traffic — product systems designed around repeatable workflows.',
+    accent: '#7f56d9',
+  },
+  {
+    id: 'Website',
+    title: 'Websites',
+    description: 'Niche web platforms, directories, and tools — public-facing experiences optimized for discovery and conversion.',
+    accent: '#0f9f8f',
+  },
+];
+
+export const workProjects: WorkProject[] = [
+  { id: 'fontspark', projectName: 'FontSpark', type: 'Web App', websiteUrl: 'https://fontspark.app', industry: 'Design', serviceCategory: 'Font Discovery', traffic: '~5,200', notes: 'Font pairing generator; viral shares on Twitter/X and Dribbble' },
+  { id: 'shipfast', projectName: 'ShipFast', type: 'Web App', websiteUrl: 'https://shipfa.st', industry: 'Developer Tools', serviceCategory: 'Next.js Boilerplate', traffic: '~5,800', notes: 'Next.js SaaS starter kit; massive maker community referrals' },
+  { id: 'videosuber', projectName: 'VideoSuber', type: 'Web App', websiteUrl: 'https://videosuber.com', industry: 'Media & Content', serviceCategory: 'Subtitle Generator', traffic: '~6,100', notes: 'Auto-subtitle for YouTube; strong long-tail SEO traffic' },
+  { id: 'pagespeed-run', projectName: 'PageSpeed.run', type: 'Web App', websiteUrl: 'https://pagespeed.run', industry: 'Developer Tools', serviceCategory: 'Performance Testing', traffic: '~6,400', notes: 'Simplified Core Web Vitals checker; dev community backlinks' },
+  { id: 'colorspark', projectName: 'ColorSpark', type: 'Web App', websiteUrl: 'https://colorspark.app', industry: 'Design', serviceCategory: 'Color Palette Generator', traffic: '~7,300', notes: 'AI color palette tool; high social virality among brand designers' },
+  { id: 'textdiff-io', projectName: 'TextDiff.io', type: 'Web App', websiteUrl: 'https://textdiff.io', industry: 'Developer Tools', serviceCategory: 'Text Comparison Tool', traffic: '~7,800', notes: 'Online text differ; ranks well for dozens of long-tail queries' },
+  { id: 'apivault', projectName: 'APIVault', type: 'Web App', websiteUrl: 'https://apivault.dev', industry: 'Developer Tools', serviceCategory: 'Public API Directory', traffic: '~8,200', notes: 'Free public API directory; heavily linked from dev tutorials' },
+  { id: 'aiheadshots-app', projectName: 'AIHeadshots.app', type: 'Web App', websiteUrl: 'https://aiheadshots.app', industry: 'AI Tools', serviceCategory: 'AI Photo Generation', traffic: '~8,600', notes: 'Professional AI headshots; LinkedIn audience drives conversions' },
+  { id: 'cryptotaxer', projectName: 'CryptoTaxer', type: 'Web App', websiteUrl: 'https://cryptotaxer.io', industry: 'Finance', serviceCategory: 'Crypto Tax Calculator', traffic: '~7,100', notes: 'Crypto tax report tool; traffic spikes around tax season' },
+  { id: 'thumbnailai', projectName: 'ThumbnailAI', type: 'Web App', websiteUrl: 'https://thumbnailai.io', industry: 'Media & Content', serviceCategory: 'YouTube Thumbnail AI', traffic: '~6,700', notes: 'AI YouTube thumbnail variants; strong creator economy niche' },
+  { id: 'cloudping', projectName: 'CloudPing', type: 'Web App', websiteUrl: 'https://cloudping.me', industry: 'Developer Tools', serviceCategory: 'Latency Checker', traffic: '~9,100', notes: 'AWS/GCP region latency tester; essential bookmark for devops' },
+  { id: 'pixelfix', projectName: 'PixelFix', type: 'Web App', websiteUrl: 'https://pixelfix.io', industry: 'Design', serviceCategory: 'AI Image Upscaler', traffic: '~5,500', notes: 'AI image upscaler; gains traffic from image search queries' },
+  { id: 'podcastindex-fm', projectName: 'PodcastIndex.fm', type: 'Web App', websiteUrl: 'https://podcastindex.fm', industry: 'Media & Content', serviceCategory: 'Podcast Directory', traffic: '~6,900', notes: 'Open podcast search index; indie alternative to Spotify search' },
+  { id: 'heatsnap', projectName: 'HeatSnap', type: 'SaaS', websiteUrl: 'https://heatsnap.io', industry: 'Analytics', serviceCategory: 'Heatmaps', traffic: '~5,300', notes: 'Simple heatmap tool for Shopify stores; Shopify app store traffic' },
+  { id: 'brandvoice', projectName: 'BrandVoice', type: 'SaaS', websiteUrl: 'https://brandvoice.ai', industry: 'Marketing', serviceCategory: 'Brand Tone of Voice AI', traffic: '~5,700', notes: 'AI tone enforcer for content teams; 14-day free trial funnel' },
+  { id: 'recapai', projectName: 'RecapAI', type: 'SaaS', websiteUrl: 'https://recapai.app', industry: 'Productivity', serviceCategory: 'Meeting Summary AI', traffic: '~6,200', notes: 'AI meeting notes for Google Meet; Chrome extension drives install' },
+  { id: 'locallens', projectName: 'LocalLens', type: 'SaaS', websiteUrl: 'https://locallens.io', industry: 'Marketing', serviceCategory: 'Local SEO Dashboard', traffic: '~5,900', notes: 'Local SEO tool for brick-and-mortar; Google Maps integration' },
+  { id: 'feedhive-micro', projectName: 'FeedHive Micro', type: 'SaaS', websiteUrl: 'https://feedhivemicro.com', industry: 'Marketing', serviceCategory: 'Social Scheduling', traffic: '~6,800', notes: 'Social media scheduler for solo creators; content-led growth' },
+  { id: 'refactorai', projectName: 'RefactorAI', type: 'SaaS', websiteUrl: 'https://refactorai.dev', industry: 'Developer Tools', serviceCategory: 'Code Refactoring AI', traffic: '~7,500', notes: 'AI code suggestions; GitHub repos and dev blogs drive traffic' },
+  { id: 'coursemapper', projectName: 'CourseMapper', type: 'SaaS', websiteUrl: 'https://coursemapper.io', industry: 'Education', serviceCategory: 'Online Course Aggregator', traffic: '~7,000', notes: 'Compares Udemy/Coursera by topic; SEO-rich comparison pages' },
+  { id: 'bloggerai', projectName: 'BloggerAI', type: 'SaaS', websiteUrl: 'https://bloggerai.io', industry: 'Marketing', serviceCategory: 'AI Blog Writer', traffic: '~6,400', notes: 'Long-form AI blog post generator with SEO scoring; freemium' },
+  { id: 'statusbuddy', projectName: 'StatusBuddy', type: 'SaaS', websiteUrl: 'https://statusbuddy.io', industry: 'Developer Tools', serviceCategory: 'Status Page Builder', traffic: '~5,100', notes: 'Hosted status pages for indie SaaS; fast one-click setup' },
+  { id: 'mindmapr', projectName: 'MindMapr', type: 'SaaS', websiteUrl: 'https://mindmapr.app', industry: 'Productivity', serviceCategory: 'Mind Mapping Tool', traffic: '~5,400', notes: 'Minimal mind mapping; freemium with export behind paywall' },
+  { id: 'surveyspark', projectName: 'SurveySpark', type: 'SaaS', websiteUrl: 'https://surveyspark.io', industry: 'Research', serviceCategory: 'Survey / Feedback Tool', traffic: '~5,800', notes: 'GDPR-friendly survey builder; embedded widget drives adoption' },
+  { id: 'calltrackr', projectName: 'CallTrackr', type: 'SaaS', websiteUrl: 'https://calltrackr.io', industry: 'Marketing', serviceCategory: 'Call Tracking', traffic: '~6,100', notes: 'Dynamic number insertion for agencies; white-label option' },
+  { id: 'linkedleads', projectName: 'LinkedLeads', type: 'SaaS', websiteUrl: 'https://linkedleads.io', industry: 'Sales', serviceCategory: 'LinkedIn Outreach', traffic: '~6,600', notes: 'LinkedIn message sequencer for B2B; review site traffic' },
+  { id: 'okrspace', projectName: 'OKRSpace', type: 'SaaS', websiteUrl: 'https://okrspace.io', industry: 'HR & Productivity', serviceCategory: 'OKR Tracking', traffic: '~7,200', notes: 'Lightweight OKR tool for small teams; Lattice/Ally alternative' },
+  { id: 'auditowl', projectName: 'AuditOwl', type: 'SaaS', websiteUrl: 'https://auditowl.com', industry: 'SEO', serviceCategory: 'Site Audit', traffic: '~5,600', notes: 'One-click SEO audit reports for agencies; white-label plan' },
+  { id: 'pricingtable-dev', projectName: 'PricingTable.dev', type: 'SaaS', websiteUrl: 'https://pricingtable.dev', industry: 'Developer Tools', serviceCategory: 'Pricing Page Builder', traffic: '~7,800', notes: 'Embeddable SaaS pricing tables; dev community distribution' },
+  { id: 'docusend', projectName: 'DocuSend', type: 'SaaS', websiteUrl: 'https://docusend.app', industry: 'Legal / Business', serviceCategory: 'Document Delivery', traffic: '~6,300', notes: 'Certified digital document delivery with read receipts' },
+  { id: 'wpspeedfix', projectName: 'WPSpeedFix', type: 'SaaS', websiteUrl: 'https://wpspeedfix.com', industry: 'WordPress', serviceCategory: 'Performance Optimization', traffic: '~5,200', notes: 'One-click WP speed optimization; WordPress plugin marketplace' },
+  { id: 'hireloop', projectName: 'HireLoop', type: 'SaaS', websiteUrl: 'https://hireloop.co', industry: 'HR & Recruiting', serviceCategory: 'ATS / Hiring', traffic: '~5,900', notes: 'Micro ATS for startups <20 employees; referral-led growth' },
+  { id: 'uptimerobotalt', projectName: 'UptimeRobotAlt', type: 'SaaS', websiteUrl: 'https://uptimerobit.io', industry: 'Developer Tools', serviceCategory: 'Uptime Monitoring', traffic: '~6,700', notes: 'Free uptime monitor; 5-min checks for hobby projects' },
+  { id: 'sprintboard', projectName: 'SprintBoard', type: 'SaaS', websiteUrl: 'https://sprintboard.io', industry: 'Developer Tools', serviceCategory: 'Agile Sprint Tool', traffic: '~5,500', notes: 'Minimal sprint planning board for indie dev teams' },
+  { id: 'supportmailer', projectName: 'SupportMailer', type: 'SaaS', websiteUrl: 'https://supportmailer.io', industry: 'Customer Support', serviceCategory: 'Help Desk Email Tool', traffic: '~7,400', notes: 'Shared inbox for small support teams; Gmail alternative' },
+  { id: 'flipmetrics', projectName: 'FlipMetrics', type: 'SaaS', websiteUrl: 'https://flipmetrics.com', industry: 'E-commerce', serviceCategory: 'Marketplace Analytics', traffic: '~6,000', notes: 'Revenue analytics for Etsy/Amazon sellers; indie-built' },
+  { id: 'bookmarkos', projectName: 'BookmarkOS', type: 'Web App', websiteUrl: 'https://bookmarkos.com', industry: 'Productivity', serviceCategory: 'Bookmark Manager', traffic: '~8,100', notes: 'Visual bookmark manager; strong Product Hunt launch history' },
+  { id: 'wireflowkit', projectName: 'WireflowKit', type: 'Web App', websiteUrl: 'https://wireflowkit.com', industry: 'Design', serviceCategory: 'Wireframe Kit', traffic: '~7,600', notes: 'Figma wireframe component kit; Figma community distribution' },
+  { id: 'roboresume', projectName: 'RoboResume', type: 'Web App', websiteUrl: 'https://roboresume.io', industry: 'Career', serviceCategory: 'AI Resume Builder', traffic: '~8,900', notes: 'ATS-optimised resume builder with AI suggestions; job SEO' },
+  { id: 'presskit-so', projectName: 'PressKit.so', type: 'Web App', websiteUrl: 'https://presskit.so', industry: 'PR & Media', serviceCategory: 'Press Kit Builder', traffic: '~5,300', notes: 'One-page press kit builder for startups and indie creators' },
+  { id: 'biobuilder', projectName: 'BioBuilder', type: 'Web App', websiteUrl: 'https://biobuilder.io', industry: 'Social Media', serviceCategory: 'Link-in-Bio Builder', traffic: '~7,900', notes: 'Simple link-in-bio pages targeting Instagram nano-influencers' },
+  { id: 'nomadstack', projectName: 'NomadStack', type: 'SaaS', websiteUrl: 'https://nomadstack.io', industry: 'Remote Work', serviceCategory: 'Remote Work Tools Hub', traffic: '~6,500', notes: 'Curated remote work tools dashboard for digital nomads' },
+  { id: 'eventsnap', projectName: 'EventSnap', type: 'SaaS', websiteUrl: 'https://eventsnap.io', industry: 'Events', serviceCategory: 'Event Photo Sharing', traffic: '~5,700', notes: 'QR-based event photo wall; wedding and conference market' },
+  { id: 'storecheck', projectName: 'StoreCheck', type: 'Website', websiteUrl: 'https://storecheck.io', industry: 'E-commerce', serviceCategory: 'Store Audit Tool', traffic: '~5,100', notes: 'Automated CRO audit for Shopify; free report generates leads' },
+  { id: 'designprompts', projectName: 'DesignPrompts', type: 'Website', websiteUrl: 'https://designprompts.io', industry: 'Design', serviceCategory: 'Design Challenge Generator', traffic: '~5,400', notes: 'Daily UI/UX design challenge prompts; Figma community traffic' },
+  { id: 'tableflip', projectName: 'TableFlip', type: 'Website', websiteUrl: 'https://tableflip.io', industry: 'Developer Tools', serviceCategory: 'CSV to HTML Table', traffic: '~5,700', notes: 'CSV-to-HTML converter; Stack Overflow backlinks drive SEO' },
+  { id: 'nichenerd', projectName: 'NicheNerd', type: 'Website', websiteUrl: 'https://nichenerd.com', industry: 'Research', serviceCategory: 'Niche Market Research', traffic: '~6,000', notes: 'Keyword + competitor research for micro-niche publishers' },
+  { id: 'legalpad', projectName: 'LegalPad', type: 'Website', websiteUrl: 'https://legalpad.io', industry: 'Legal', serviceCategory: 'Legal Doc Templates', traffic: '~6,300', notes: 'Pre-built legal templates for freelancers; SEO-driven' },
+  { id: 'contractfox', projectName: 'ContractFox', type: 'Website', websiteUrl: 'https://contractfox.io', industry: 'Legal', serviceCategory: 'Contract Templates', traffic: '~5,200', notes: 'Freelancer contract builder with e-sign; legal niche SEO' },
+  { id: 'gigboard', projectName: 'GigBoard', type: 'Website', websiteUrl: 'https://gigboard.io', industry: 'Freelance', serviceCategory: 'Freelance Job Board', traffic: '~6,800', notes: 'Curated remote gig listings for designers; niche job board' },
+  { id: 'quickcert', projectName: 'QuickCert', type: 'Website', websiteUrl: 'https://quickcert.app', industry: 'Education', serviceCategory: 'Certificate Generator', traffic: '~7,100', notes: 'Online course certificate maker; integrates with Teachable' },
+  { id: 'receiptvault', projectName: 'ReceiptVault', type: 'Website', websiteUrl: 'https://receiptvault.app', industry: 'Finance', serviceCategory: 'Receipt Management', traffic: '~5,600', notes: 'Mobile receipt scanner and expense tracker for freelancers' },
+  { id: 'tagmaster', projectName: 'TagMaster', type: 'Website', websiteUrl: 'https://tagmaster.app', industry: 'E-commerce', serviceCategory: 'Product Tag Manager', traffic: '~5,900', notes: 'Bulk product tag editor for Shopify; app marketplace traffic' },
+  { id: 'zapmyform', projectName: 'ZapMyForm', type: 'Website', websiteUrl: 'https://zapmyform.com', industry: 'Automation', serviceCategory: 'Form-to-Zapier Bridge', traffic: '~7,400', notes: 'HTML form to Zapier trigger bridge; no-code community traffic' },
+  { id: 'menumaker', projectName: 'MenuMaker', type: 'Website', websiteUrl: 'https://menumaker.io', industry: 'Food & Beverage', serviceCategory: 'Digital Menu Builder', traffic: '~6,500', notes: 'QR code menu builder for cafes; post-COVID demand spike' },
+  { id: 'climatepledge', projectName: 'ClimatePledge', type: 'Website', websiteUrl: 'https://climatepledge.app', industry: 'Sustainability', serviceCategory: 'Carbon Footprint Tracker', traffic: '~5,300', notes: 'Personal carbon offset tracker; NGO partnership traffic' },
+  { id: 'podsnippet', projectName: 'PodSnippet', type: 'Website', websiteUrl: 'https://podsnippet.com', industry: 'Media & Content', serviceCategory: 'Podcast Clip Tool', traffic: '~5,700', notes: 'Clip-to-social tool for podcast creators; Product Hunt spike' },
+  { id: 'submanager', projectName: 'SubManager', type: 'Website', websiteUrl: 'https://submanager.app', industry: 'Finance', serviceCategory: 'Subscription Tracker', traffic: '~6,200', notes: 'Personal subscription tracker; competes in Truebill niche' },
+  { id: 'kidschedulr', projectName: 'KidSchedulr', type: 'Website', websiteUrl: 'https://kidschedulr.com', industry: 'Education', serviceCategory: 'Family Scheduling', traffic: '~6,700', notes: 'After-school activity scheduler for parents; mommy blog refs' },
+  { id: 'planterpro', projectName: 'PlanterPro', type: 'Website', websiteUrl: 'https://planterpro.io', industry: 'Agriculture', serviceCategory: 'Crop Planning Tool', traffic: '~5,100', notes: 'Seasonal crop planner for hobby farmers; Pinterest traffic' },
+  { id: 'glossarymaker', projectName: 'GlossaryMaker', type: 'Website', websiteUrl: 'https://glossarymaker.io', industry: 'Education / SaaS', serviceCategory: 'Glossary Builder', traffic: '~5,500', notes: 'Embeddable knowledge glossary for SaaS documentation' },
+  { id: 'appreviewer', projectName: 'AppReviewer', type: 'Website', websiteUrl: 'https://appreviewer.io', industry: 'App Stores', serviceCategory: 'App Review Aggregator', traffic: '~5,800', notes: 'Aggregates iOS/Android app reviews for competitor analysis' },
+  { id: 'contentcal-lite', projectName: 'ContentCal Lite', type: 'Website', websiteUrl: 'https://contentcallite.io', industry: 'Marketing', serviceCategory: 'Editorial Calendar', traffic: '~6,100', notes: 'Simple editorial calendar for solo bloggers and writers' },
+  { id: 'invoicebuddy', projectName: 'InvoiceBuddy', type: 'Website', websiteUrl: 'https://invoicebuddy.app', industry: 'Finance', serviceCategory: 'Invoicing / Billing', traffic: '~6,400', notes: 'Zero-fee invoicing for solo consultants; strong word-of-mouth' },
+  { id: 'dropwaiter', projectName: 'DropWaiter', type: 'Website', websiteUrl: 'https://dropwaiter.com', industry: 'Food & Beverage', serviceCategory: 'Waitlist / Reservation', traffic: '~6,900', notes: 'Digital waitlist system for restaurants; QR code signup' },
+  { id: 'officefloor', projectName: 'OfficeFloor', type: 'Website', websiteUrl: 'https://officefloor.app', industry: 'Real Estate', serviceCategory: 'Office Space Management', traffic: '~7,200', notes: 'Hot-desk and meeting room booking platform for SMBs' },
+  { id: 'retainerhq', projectName: 'RetainerHQ', type: 'Website', websiteUrl: 'https://retainerhq.com', industry: 'Agency Tools', serviceCategory: 'Client Retainer Mgmt', traffic: '~7,600', notes: 'Retainer billing dashboard for freelance designers' },
+  { id: 'hrhive', projectName: 'HRHive', type: 'Website', websiteUrl: 'https://hrhive.io', industry: 'HR', serviceCategory: 'Employee Onboarding', traffic: '~5,400', notes: 'Digital onboarding checklists for SMB HR teams' },
+  { id: 'pethealth', projectName: 'PetHealth', type: 'Website', websiteUrl: 'https://pethealth.io', industry: 'Pet Care', serviceCategory: 'Pet Health Tracker', traffic: '~5,900', notes: 'Pet vaccination & vet appointment tracker for pet owners' },
+  { id: 'nestvault', projectName: 'NestVault', type: 'Website', websiteUrl: 'https://nestvault.io', industry: 'Real Estate', serviceCategory: 'Property Document Storage', traffic: '~6,600', notes: 'Secure document vault for homeowners and landlords' },
+  { id: 'webarchiver', projectName: 'WebArchiver', type: 'Website', websiteUrl: 'https://webarchiver.io', industry: 'Developer Tools', serviceCategory: 'Website Screenshot API', traffic: '~7,000', notes: 'Automated webpage screenshot API; dev docs drive organic search' },
+  { id: 'geotagr', projectName: 'GeoTagr', type: 'Website', websiteUrl: 'https://geotagr.io', industry: 'Photography', serviceCategory: 'Metadata / EXIF Tools', traffic: '~7,400', notes: 'Batch GPS-tagging tool for photographers; niche community' },
+  { id: 'crmlite', projectName: 'CRMlite', type: 'Website', websiteUrl: 'https://crmlite.io', industry: 'Sales', serviceCategory: 'Simple CRM', traffic: '~7,900', notes: '10-contact free CRM for solopreneurs; HubSpot alternative' },
+  { id: 'leadghost', projectName: 'LeadGhost', type: 'Website', websiteUrl: 'https://leadghost.io', industry: 'Sales', serviceCategory: 'Lead Enrichment', traffic: '~8,300', notes: 'Anonymous visitor ID for B2B sites; trial-first model' },
+  { id: 'reviewsift', projectName: 'ReviewSift', type: 'Website', websiteUrl: 'https://reviewsift.com', industry: 'E-commerce', serviceCategory: 'Review Management', traffic: '~8,600', notes: 'Aggregates Amazon/Google reviews; built by indie hacker' },
+  { id: 'cronjet', projectName: 'CronJet', type: 'Website', websiteUrl: 'https://cronjet.com', industry: 'Developer Tools', serviceCategory: 'Job Scheduler', traffic: '~8,900', notes: 'Hosted cron job manager; favored by solo devs and indie makers' },
+  { id: 'moodboard-ai', projectName: 'MoodBoard.ai', type: 'Website', websiteUrl: 'https://moodboard.ai', industry: 'Design', serviceCategory: 'AI Mood Board', traffic: '~9,200', notes: 'AI-assisted mood boards for brand designers; Dribbble traffic' },
+  { id: 'changelog-so', projectName: 'ChangeLog.so', type: 'Website', websiteUrl: 'https://changelog.so', industry: 'Developer Tools', serviceCategory: 'Product Changelog', traffic: '~9,500', notes: 'Embeddable changelog widget; used by micro-SaaS founders' },
+  { id: 'leadghost-pro', projectName: 'LeadGhost Pro', type: 'Website', websiteUrl: 'https://leadghostpro.io', industry: 'B2B Marketing', serviceCategory: 'Account-Based Marketing', traffic: '~8,100', notes: 'ABM tool for SMB marketers; intent data from visitor ID' },
+  { id: 'formcraft-pro', projectName: 'FormCraft Pro', type: 'Website', websiteUrl: 'https://formcraftpro.com', industry: 'Marketing', serviceCategory: 'Form Builder', traffic: '~7,300', notes: 'Lightweight form builder for agencies; free tier drives discovery' },
+  { id: 'snapcalc', projectName: 'SnapCalc', type: 'Website', websiteUrl: 'https://snapcalc.io', industry: 'Productivity', serviceCategory: 'Calculator / Utility', traffic: '~6,800', notes: 'Niche math tool for freelancers; simple UI drives repeat visits' },
+  { id: 'pasteport', projectName: 'PastePort', type: 'Website', websiteUrl: 'https://pasteport.io', industry: 'Developer Tools', serviceCategory: 'Snippet Manager', traffic: '~8,500', notes: 'Code snippet manager with team sharing; Slack integration' },
+  { id: 'cronjob-io', projectName: 'CronJob.io', type: 'Website', websiteUrl: 'https://cronjob.io', industry: 'Developer Tools', serviceCategory: 'Cron Job Monitor', traffic: '~9,700', notes: 'Free cron job monitor; huge SEO footprint for developer tools' },
+];
+
+export const workProjectStats = {
+  total: workProjects.length,
+  apps: workProjects.filter((project) => project.type === 'Web App').length,
+  saas: workProjects.filter((project) => project.type === 'SaaS').length,
+  websites: workProjects.filter((project) => project.type === 'Website').length,
+  industries: new Set(workProjects.map((project) => project.industry)).size,
+};
+
+export function getWorkProjectIndustries(type?: WorkProjectType) {
+  const pool = type ? workProjects.filter((project) => project.type === type) : workProjects;
+  return [...new Set(pool.map((project) => project.industry))].sort();
+}

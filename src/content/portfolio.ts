@@ -47,7 +47,7 @@ export const portfolioCategories: PortfolioCategory[] = [
   {
     id: 'web-development',
     title: 'Web Development',
-    description: 'Public websites, product interfaces, staging environments, and authenticated web applications.',
+    description: 'Public websites, product interfaces, and customer-facing web experiences built for credibility and conversion.',
     dashboardVariant: 'web',
     accent: '#155eef',
   },
@@ -265,24 +265,36 @@ const wordpress: RawPortfolioEntry[] = [
 function titleCase(value: string) {
   return value
     .replace(/^_+|_+$/g, '')
+    .replace(/([a-z])([A-Z])/g, '$1 $2')
     .replace(/[._-]+/g, ' ')
+    .replace(/\b(app|ai|saas|seo|crm|it|ryk|pk|uk|usa|llc)\b/gi, (match) => match.toUpperCase())
     .replace(/\b\w/g, (letter) => letter.toUpperCase());
 }
 
 function titleFromUrl(url: string) {
   const parsed = new URL(url);
-  if (/facebook\.com$/i.test(parsed.hostname.replace(/^www\./, ''))) {
+  const hostname = parsed.hostname.replace(/^www\./, '');
+  if (/facebook\.com$/i.test(hostname)) {
     const path = parsed.pathname.split('/').filter(Boolean)[0];
-    return path === 'profile.php' ? `Facebook Profile ${parsed.searchParams.get('id')?.slice(-4) || ''}`.trim() : titleCase(path || 'Facebook');
+    return path === 'profile.php'
+      ? `Business Page ${parsed.searchParams.get('id')?.slice(-4) || ''}`.trim()
+      : titleCase(path || 'Business Page');
   }
-  if (/instagram\.com$/i.test(parsed.hostname.replace(/^www\./, ''))) {
+  if (/instagram\.com$/i.test(hostname)) {
     return titleCase(parsed.pathname.split('/').filter(Boolean)[0] || 'Instagram');
   }
-  if (/linkedin\.com$/i.test(parsed.hostname.replace(/^www\./, ''))) {
+  if (/linkedin\.com$/i.test(hostname)) {
     return titleCase(parsed.pathname.split('/').filter(Boolean).at(-1) || 'LinkedIn');
   }
-  const domain = parsed.hostname.replace(/^www\./, '').split('.')[0];
+  const domain = hostname.split('.')[0];
   return titleCase(domain);
+}
+
+function portfolioKey(url: string) {
+  const parsed = new URL(url);
+  const hostname = parsed.hostname.replace(/^www\./, '').toLowerCase();
+  const path = parsed.pathname.replace(/\/+$/, '').toLowerCase();
+  return `${hostname}${path === '/' ? '' : path}`;
 }
 
 function platformFromUrl(url: string, category: PortfolioCategoryId): PortfolioPlatform {
@@ -330,11 +342,13 @@ export const portfolioEntries: PortfolioEntry[] = [
   ...saasProducts.map((entry) => buildEntry(entry, 'saas-products')),
   ...shopify.map((entry) => buildEntry(entry, 'shopify')),
   ...wordpress.map((entry) => buildEntry(entry, 'wordpress')),
-];
+]
+  .filter((entry) => !entry.isStaging && !entry.requiresLogin)
+  .filter((entry, index, entries) => entries.findIndex((item) => portfolioKey(item.url) === portfolioKey(entry.url)) === index);
 
 export const portfolioStats = {
   entries: portfolioEntries.length,
-  categories: 8,
+  categories: portfolioCategories.length,
   testimonials: 160,
   countries: 6,
 };

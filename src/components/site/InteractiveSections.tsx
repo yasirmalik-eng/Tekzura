@@ -4,6 +4,7 @@ import {
   BarChart3,
   Boxes,
   Check,
+  ChevronDown,
   ChevronRight,
   CircuitBoard,
   Code2,
@@ -196,23 +197,105 @@ function ServiceDashboardVisual({ service }: { service: Service }) {
             </div>
           )}
 
-          {service.slug === 'data-entry' && (
+          {service.slug === 'saas' && (
             <div className="data-preview">
-              <div className="mini-dashboard-title"><div><span>Data quality</span><strong>Customer records</strong></div><i>98.7% valid</i></div>
+              <div className="mini-dashboard-title"><div><span>Subscription metrics</span><strong>Recurring revenue</strong></div><i>MRR +18%</i></div>
               <div className="data-table">
-                <div className="data-head"><span>Name</span><span>Company</span><span>Status</span><span>Quality</span></div>
+                <div className="data-head"><span>Plan</span><span>Customer</span><span>Status</span><span>MRR</span></div>
                 {[
-                  ['A. Khan', 'Nexa', 'Verified', '100%'],
-                  ['S. Malik', 'Orbit', 'Review', '84%'],
-                  ['M. Ali', 'Vertex', 'Verified', '100%'],
-                  ['H. Noor', 'Bright', 'Verified', '96%'],
-                ].map((row) => <div key={row[0]}>{row.map((cell, index) => <span key={cell} className={index === 2 ? cell.toLowerCase() : ''}>{cell}</span>)}</div>)}
+                  ['Pro', 'Nexa', 'Active', '$240'],
+                  ['Team', 'Orbit', 'Trial', '$0'],
+                  ['Scale', 'Vertex', 'Active', '$960'],
+                  ['Pro', 'Bright', 'Active', '$240'],
+                ].map((row) => <div key={row[1]}>{row.map((cell, index) => <span key={cell} className={index === 2 ? (cell === 'Active' ? 'verified' : 'review') : ''}>{cell}</span>)}</div>)}
               </div>
-              <div className="data-footer"><span><i /> 386 records validated</span><b>12 need review</b></div>
+              <div className="data-footer"><span><i /> 1,284 active subscriptions</span><b>32 on trial</b></div>
             </div>
           )}
         </div>
       </div>
+    </div>
+  );
+}
+
+function ServiceDashboardCopy({ service }: { service: Service }) {
+  return (
+    <div className="dashboard-service-copy">
+      <p className="eyebrow">{service.eyebrow}</p>
+      <h3>{service.title}</h3>
+      <p>{service.summary}</p>
+      <ul>
+        {service.deliverables.slice(0, 3).map((item) => <li key={item}><Check aria-hidden="true" />{item}</li>)}
+      </ul>
+      <Link className="text-link" to={`/services/${service.slug}`}>Explore Service <ArrowRight aria-hidden="true" /></Link>
+    </div>
+  );
+}
+
+function ServiceDirectoryMobilePanel({ service }: { service: Service }) {
+  const Icon = service.icon;
+
+  return (
+    <div className="service-directory-mobile-panel">
+      <div className="service-directory-mobile-visual">
+        <img src={service.image} alt={service.imageAlt} width="1200" height="800" loading="lazy" />
+        <div className="service-directory-shade" aria-hidden="true" />
+        <div className="service-directory-badge"><Icon aria-hidden="true" /><span>{service.eyebrow}</span></div>
+      </div>
+      <h3>{service.title}</h3>
+      <p>{service.summary}</p>
+      <p className="service-directory-mobile-outcome"><strong>Designed outcome:</strong> {service.outcome}</p>
+      <div className="tag-row">{service.technologies.slice(0, 4).map((tech) => <span key={tech}>{tech}</span>)}</div>
+      <Link className="text-link" to={`/services/${service.slug}`}>Explore Service <ArrowRight aria-hidden="true" /></Link>
+    </div>
+  );
+}
+
+function ServicesMobileAccordion({
+  activeSlug,
+  onSelect,
+  variant,
+}: {
+  activeSlug: ServiceSlug;
+  onSelect: (slug: ServiceSlug) => void;
+  variant: 'dashboard' | 'directory';
+}) {
+  return (
+    <div className="services-mobile-accordion">
+      {services.map((service) => {
+        const isOpen = activeSlug === service.slug;
+        const panelId = `service-mobile-panel-${service.slug}`;
+        const triggerId = `service-mobile-trigger-${service.slug}`;
+
+        return (
+          <article key={service.slug} className={`services-mobile-accordion-item ${isOpen ? 'is-open' : ''}`}>
+            <button
+              id={triggerId}
+              type="button"
+              className="services-mobile-accordion-trigger"
+              aria-expanded={isOpen}
+              aria-controls={panelId}
+              onClick={() => onSelect(service.slug)}
+            >
+              <span>{service.shortTitle}</span>
+              <ChevronDown aria-hidden="true" />
+            </button>
+            <div
+              id={panelId}
+              className="services-mobile-accordion-panel"
+              role="region"
+              aria-labelledby={triggerId}
+              hidden={!isOpen}
+            >
+              {variant === 'dashboard' ? (
+                <ServiceDashboardCopy service={service} />
+              ) : (
+                <ServiceDirectoryMobilePanel service={service} />
+              )}
+            </div>
+          </article>
+        );
+      })}
     </div>
   );
 }
@@ -243,66 +326,60 @@ export function CapabilityExplorer({ variant = 'directory' }: { variant?: 'direc
       <div className="container">
         <Reveal>
           <SectionHeading
-            eyebrow={variant === 'dashboard' ? 'Capability explorer' : 'Service portfolio'}
-            title={variant === 'dashboard' ? 'One team, several ways to move the business forward' : 'Specialist capabilities, connected by one delivery team'}
-            description={variant === 'dashboard'
-              ? 'Select a capability to see how Tekzura connects delivery work with the result your team needs.'
-              : 'Explore each capability by the business result it supports, then open the service that matches your next priority.'}
+            eyebrow={ ''}
+            title={ 'Services we offer'}
+            description={'Select a capability to see how Tekzura connects delivery work with the result your team needs.'}
           />
         </Reveal>
         {variant === 'dashboard' ? (
-          <div className="capability-dashboard">
-            <div className="dashboard-tabs" role="tablist" aria-label="Tekzura services">
-              {services.map((service, index) => {
-                const ServiceIcon = service.icon;
-                return (
-                  <button
-                    key={service.slug}
-                    id={`dashboard-tab-${service.slug}`}
-                    type="button"
-                    role="tab"
-                    aria-selected={activeSlug === service.slug}
-                    aria-controls={`dashboard-panel-${service.slug}`}
-                    tabIndex={activeSlug === service.slug ? 0 : -1}
-                    onClick={() => select(service.slug)}
-                    onKeyDown={(event) => {
-                      if (event.key === 'ArrowDown' || event.key === 'ArrowRight') {
-                        event.preventDefault();
-                        moveTab(index, 1);
-                      }
-                      if (event.key === 'ArrowUp' || event.key === 'ArrowLeft') {
-                        event.preventDefault();
-                        moveTab(index, -1);
-                      }
-                    }}
-                  >
-                    <ServiceIcon aria-hidden="true" />
-                    <span><strong>{service.shortTitle}</strong><small>{service.eyebrow}</small></span>
-                    <ChevronRight aria-hidden="true" />
-                  </button>
-                );
-              })}
-            </div>
-            <div
-              className="dashboard-panel"
-              id={`dashboard-panel-${active.slug}`}
-              role="tabpanel"
-              aria-labelledby={`dashboard-tab-${active.slug}`}
-            >
-              <div className="dashboard-service-copy" key={`copy-${active.slug}`}>
-                <p className="eyebrow">{active.eyebrow}</p>
-                <h3>{active.title}</h3>
-                <p>{active.summary}</p>
-                <ul>
-                  {active.deliverables.slice(0, 3).map((item) => <li key={item}><Check aria-hidden="true" />{item}</li>)}
-                </ul>
-                <Link className="text-link" to={`/services/${active.slug}`}>Explore Service <ArrowRight aria-hidden="true" /></Link>
+          <>
+            <div className="capability-dashboard capability-dashboard-desktop">
+              <div className="dashboard-tabs" role="tablist" aria-label="Tekzura services">
+                {services.map((service, index) => {
+                  const ServiceIcon = service.icon;
+                  return (
+                    <button
+                      key={service.slug}
+                      id={`dashboard-tab-${service.slug}`}
+                      type="button"
+                      role="tab"
+                      aria-selected={activeSlug === service.slug}
+                      aria-controls={`dashboard-panel-${service.slug}`}
+                      tabIndex={activeSlug === service.slug ? 0 : -1}
+                      onClick={() => select(service.slug)}
+                      onKeyDown={(event) => {
+                        if (event.key === 'ArrowDown' || event.key === 'ArrowRight') {
+                          event.preventDefault();
+                          moveTab(index, 1);
+                        }
+                        if (event.key === 'ArrowUp' || event.key === 'ArrowLeft') {
+                          event.preventDefault();
+                          moveTab(index, -1);
+                        }
+                      }}
+                    >
+                      <ServiceIcon aria-hidden="true" />
+                      <span><strong>{service.shortTitle}</strong><small>{service.eyebrow}</small></span>
+                      <ChevronRight aria-hidden="true" />
+                    </button>
+                  );
+                })}
               </div>
-              <ServiceDashboardVisual service={active} key={`dashboard-${active.slug}`} />
+              <div
+                className="dashboard-panel"
+                id={`dashboard-panel-${active.slug}`}
+                role="tabpanel"
+                aria-labelledby={`dashboard-tab-${active.slug}`}
+              >
+                <ServiceDashboardCopy service={active} key={`copy-${active.slug}`} />
+                <ServiceDashboardVisual service={active} key={`dashboard-${active.slug}`} />
+              </div>
             </div>
-          </div>
+            <ServicesMobileAccordion activeSlug={activeSlug} onSelect={select} variant="dashboard" />
+          </>
         ) : (
-        <div className="service-directory">
+        <>
+        <div className="service-directory service-directory-desktop">
           <div className="service-directory-visual" key={active.slug}>
             <img src={active.image} alt={active.imageAlt} width="1200" height="800" loading="lazy" />
             <div className="service-directory-shade" aria-hidden="true" />
@@ -337,6 +414,8 @@ export function CapabilityExplorer({ variant = 'directory' }: { variant?: 'direc
             })}
           </div>
         </div>
+        <ServicesMobileAccordion activeSlug={activeSlug} onSelect={select} variant="directory" />
+        </>
         )}
       </div>
     </section>
@@ -427,7 +506,7 @@ export function ServiceDeliveryProcess({ service }: { service: Service }) {
     <section className="section service-process-section" id="delivery-process">
       <div className="container">
         <SectionHeading
-          eyebrow="Delivery approach"
+          eyebrow=""
           title="Visible progress at every stage"
           description={`Each ${service.shortTitle.toLowerCase()} engagement moves through visible stages, with decisions and progress kept close to the business goal.`}
           align="center"
@@ -526,7 +605,7 @@ export function ServiceMatcher() {
     <section className="section matcher-section">
       <div className="container matcher-grid">
         <div>
-          <p className="eyebrow">Find your starting point</p>
+          <p className="eyebrow"></p>
           <h2>What are you trying to improve?</h2>
           <p>Select the closest goal. We will point you toward a useful first conversation.</p>
           <div className="matcher-options">

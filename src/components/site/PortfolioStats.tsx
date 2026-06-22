@@ -12,7 +12,7 @@ const stats = [
   },
   {
     value: portfolioStats.categories,
-    suffix: '+',
+    suffix: '',
     label: 'Core Capabilities',
   },
   {
@@ -106,9 +106,9 @@ export default function PortfolioStats() {
     <section className="portfolio-stats-section" id="portfolio-stats" aria-label="Tekzura portfolio statistics">
       <div className="container" ref={ref}>
         <div className="portfolio-stats-heading">
-          <p className="eyebrow">Built On Delivered Work</p>
-          <h2>Experience you can see, explore, and verify.</h2>
-          <p>Our portfolio spans customer-facing platforms, digital products, commerce, and brand growth across global markets.</p>
+          
+          <h2 className="section-title">Why Choose Tekzura?</h2>
+          <p>This highlights our skills, experience, and quality of work, demonstrating our commitment to excellence.</p>
         </div>
         <div className="portfolio-stats-panel">
           {stats.map((stat) => {

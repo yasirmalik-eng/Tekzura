@@ -3,10 +3,13 @@ import { Link } from 'react-router-dom';
 import { caseStudies, siteConfig, team, testimonials } from '../content/site';
 import { CaseStudyCard, SectionHeading } from '../components/site/PageElements';
 import Seo from '../components/site/Seo';
-import { CapabilityExplorer, ProcessStory, Reveal, ServiceMatcher } from '../components/site/InteractiveSections';
+import { CapabilityExplorer, Reveal, ServiceMatcher } from '../components/site/InteractiveSections';
 import { CommonQuestions, FounderSpotlight } from '../components/site/TeamSections';
 import TestimonialsCarousel from '../components/site/TestimonialsCarousel';
 import PortfolioStats from '../components/site/PortfolioStats';
+import TrustSection from '../components/site/TrustSection';
+import ProductStudioFramework from '../components/site/ProductStudioFramework';
+import InvestorSection from '../components/site/InvestorSection';
 
 export default function HomePage() {
   const schema = {
@@ -27,30 +30,30 @@ export default function HomePage() {
         <div className="immersive-overlay" aria-hidden="true" />
         <div className="container home-hero-grid">
           <div className="hero-copy">
-            <p className="eyebrow eyebrow-light">Digital delivery for ambitious businesses</p>
-            <h1>Build what moves your business forward.</h1>
+
+            <h1>Your Trusted Partner for Development and Growth.</h1>
             <p className="lead">
-              Tekzura connects product design, engineering, automation, and growth into focused digital systems for SMBs and startups.
+              Tekzura transforms ideas into launch-ready assets with strategy, engineering, and marketing under one roof.
             </p>
             <div className="button-row">
               <a className="button button-primary" href={siteConfig.calendly} target="_blank" rel="noreferrer">
-                <CalendarDays aria-hidden="true" /> Book a Strategy Call
+                <CalendarDays aria-hidden="true" /> Book a Growth Strategy Call
               </a>
-              <Link className="button button-secondary" to="/work">
-                Explore Our Work <ArrowRight aria-hidden="true" />
-              </Link>
+              <a className="button button-secondary" href="#product-studio">
+                See How We Scale Products <ArrowRight aria-hidden="true" />
+              </a>
             </div>
-            <ul className="hero-points" aria-label="Engagement benefits">
-              <li><CheckCircle2 aria-hidden="true" /> Strategy through delivery</li>
-              <li><CheckCircle2 aria-hidden="true" /> Practical milestones</li>
-              <li><CheckCircle2 aria-hidden="true" /> Global collaboration</li>
+            <ul className="hero-points" aria-label="Why teams choose Tekzura">
+              <li><CheckCircle2 aria-hidden="true" /> Product strategy to launch</li>
+              <li><CheckCircle2 aria-hidden="true" /> Conversion-focused execution</li>
+              <li><CheckCircle2 aria-hidden="true" /> Growth support after release</li>
             </ul>
           </div>
-          <div className="hero-signal-panel" aria-label="Tekzura delivery model">
-            <span className="signal-live"><i /> Delivery system online</span>
-            <strong>From business challenge to working digital system.</strong>
+          <div className="hero-signal-panel" aria-label="Tekzura product studio model">
+
+            <strong>From idea to launch, traction, and scale.</strong>
             <div className="signal-flow">
-              <span>Discover</span><i /><span>Design</span><i /><span>Build</span><i /><span>Improve</span>
+              <span>Validate</span><i /><span>Build</span><i /><span>Launch</span><i /><span>Scale</span>
             </div>
             <div className="hero-team-strip">
               <img
@@ -60,13 +63,12 @@ export default function HomePage() {
                 height={team[0].height}
                 loading="eager"
               />
-              <div><strong>Founder-led delivery</strong><span>Strategy connected directly to execution</span></div>
+              <div><strong>Founder-led delivery</strong><span>Strategy stays connected to execution</span></div>
             </div>
           </div>
         </div>
         <a className="hero-scroll-cue" href="#capabilities"><MoveDown aria-hidden="true" /> Explore Capabilities</a>
       </section>
-
       <section className="trust-strip capability-rail" aria-label="Tekzura capabilities">
         <div className="container trust-grid">
           <div><strong>Product & Web</strong><span>Fast, scalable digital experiences</span></div>
@@ -76,41 +78,35 @@ export default function HomePage() {
         </div>
       </section>
 
+      <TrustSection />
+
+
+
       <PortfolioStats />
 
       <CapabilityExplorer variant="dashboard" />
 
-      <ProcessStory />
+      <ProductStudioFramework />
 
-      <section className="section work-showcase">
-        <div className="container">
-          <Reveal><SectionHeading
-              eyebrow="Selected work"
-              title="Digital systems designed around the operating challenge"
-              description="Representative engagements showing how product thinking, technology, and business context come together."
-            /></Reveal>
-          <div className="case-grid case-grid-featured">
-            {caseStudies.slice(0, 2).map((item, index) => <Reveal key={item.title} delay={index * 80}><CaseStudyCard item={item} expandable={false} /></Reveal>)}
-          </div>
-          <div className="section-action"><Link className="text-link" to="/work">See More Work <ArrowRight aria-hidden="true" /></Link></div>
-        </div>
-      </section>
+      <InvestorSection />
 
+
+      <FounderSpotlight />
       <section className="section section-ink testimonial-section" id="testimonials">
         <div className="container testimonial-layout">
           <div className="testimonial-intro">
             <SectionHeading
-              eyebrow="Client experience"
-              title="Trusted by teams across industries and borders"
-              description="Direct feedback from founders, operators, and product leaders who partnered with Tekzura."
+              eyebrow=""
+              title="Don't just take our words for it – Take theirs!"
+              description="Feedback from founders, operators, and product leaders who wanted more than task-based delivery."
             />
           </div>
           <TestimonialsCarousel items={testimonials} />
         </div>
       </section>
-      <FounderSpotlight />
+
       <CommonQuestions />
-      <ServiceMatcher />
+
     </>
   );
 }

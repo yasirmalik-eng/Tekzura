@@ -1,8 +1,8 @@
 import { ArrowRight, CalendarDays, Code2, TrendingUp, Workflow } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import ConversionCTA from '../components/site/ConversionCTA';
 import { PageHero, SectionHeading } from '../components/site/PageElements';
 import Seo from '../components/site/Seo';
-import { siteConfig } from '../content/site';
 import { CapabilityExplorer, Reveal } from '../components/site/InteractiveSections';
 
 export default function ServicesPage() {
@@ -14,16 +14,16 @@ export default function ServicesPage() {
         path="/services"
       />
       <PageHero
-        eyebrow="Services"
-        title="Focused capabilities, assembled around your goal."
-        description="Engage Tekzura for a defined project or combine complementary services into one coordinated delivery plan."
-        visual="/service-web-development.jpg"
+        eyebrow=""
+        title="Services built around launch, growth, and scale."
+        description="Choose a focused service or combine product, engineering, automation, and growth into one delivery plan."
+        visual=""
         visualAlt="Product engineering team reviewing a responsive website and application interface"
         theme="dark"
       >
-        <a className="button button-primary" href={siteConfig.calendly} target="_blank" rel="noreferrer">
-          <CalendarDays aria-hidden="true" /> Discuss Your Project
-        </a>
+        <Link className="button button-primary" to="/get-started">
+          <CalendarDays aria-hidden="true" /> Plan My Project
+        </Link>
       </PageHero>
 
       <CapabilityExplorer />
@@ -31,9 +31,9 @@ export default function ServicesPage() {
       <section className="section section-soft">
         <div className="container">
           <SectionHeading
-            eyebrow="Choose the right starting point"
-            title="Not sure which service fits?"
-            description="Start with the business outcome. We will help identify the smallest useful engagement and the capabilities it needs."
+            eyebrow=""
+            title="Start with the outcome, then choose the capability."
+            description="Whether you need to build, operate, or grow, Tekzura helps define the smallest useful engagement that moves the business forward."
             align="center"
           />
           <div className="service-paths">
@@ -73,6 +73,13 @@ export default function ServicesPage() {
           </div>
         </div>
       </section>
+
+      <ConversionCTA
+        eyebrow="Build with confidence"
+        title="Know the goal but not the roadmap?"
+        description="Share what you want to launch, fix, or grow. We will map the first useful step and the capabilities needed to get there."
+        bullets={['Outcome-first scope', 'Clear launch path', 'Growth-ready roadmap']}
+      />
     </>
   );
 }

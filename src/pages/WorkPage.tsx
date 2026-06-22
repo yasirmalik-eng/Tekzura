@@ -1,90 +1,129 @@
 import { useMemo } from 'react';
 import { ArrowRight, BriefcaseBusiness, SlidersHorizontal } from 'lucide-react';
 import { useSearchParams } from 'react-router-dom';
+import ConversionCTA from '../components/site/ConversionCTA';
 import { CaseStudyCard, PageHero } from '../components/site/PageElements';
-import { PortfolioDashboard, PortfolioLinkCard } from '../components/site/PortfolioDashboard';
 import Seo from '../components/site/Seo';
+import { WorkProjectCard } from '../components/site/WorkProjectCard';
+import { WorkProjectsDashboard } from '../components/site/WorkProjectsDashboard';
 import { caseStudies } from '../content/site';
 import {
-  portfolioCategories,
-  portfolioEntries,
-  portfolioStats,
-  type PortfolioCategoryId,
-} from '../content/portfolio';
+  countWorkSectionCategory,
+  filterShowcaseProjects,
+  getShowcaseCategoryView,
+  getShowcaseFilters,
+  getShowcaseProjects,
+  resolveWorkSectionCategoryId,
+  workSectionCategories,
+  workSectionStats,
+  type WorkSectionCategoryId,
+} from '../content/workSection';
 
 export default function WorkPage() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const requestedCategory = searchParams.get('category') as PortfolioCategoryId | null;
-  const activeCategory = portfolioCategories.some((category) => category.id === requestedCategory)
-    ? requestedCategory!
-    : portfolioCategories[0].id;
-  const active = portfolioCategories.find((category) => category.id === activeCategory)!;
-  const categoryEntries = useMemo(
-    () => portfolioEntries.filter((entry) => entry.category === activeCategory),
-    [activeCategory],
+  const activeCategoryId = resolveWorkSectionCategoryId(searchParams.get('category'));
+  const activeCategory = workSectionCategories.find((category) => category.id === activeCategoryId)!;
+  const showcaseCategory = getShowcaseCategoryView(activeCategoryId);
+
+  const showcaseProjects = useMemo(
+    () => getShowcaseProjects(activeCategoryId),
+    [activeCategoryId],
   );
-  const filters = useMemo(
-    () => ['All', ...new Set(categoryEntries.map((entry) => entry.subcategory || entry.platform))],
-    [categoryEntries],
-  );
+
+  const filters = useMemo(() => getShowcaseFilters(showcaseProjects), [showcaseProjects]);
+
   const requestedFilter = searchParams.get('filter');
   const activeFilter = requestedFilter && filters.includes(requestedFilter) ? requestedFilter : 'All';
-  const filteredEntries = activeFilter === 'All'
-    ? categoryEntries
-    : categoryEntries.filter((entry) => (entry.subcategory || entry.platform) === activeFilter);
 
-  function selectCategory(category: PortfolioCategoryId) {
-    setSearchParams({ category });
+  const filteredProjects = useMemo(
+    () => filterShowcaseProjects(showcaseProjects, activeFilter),
+    [activeFilter, showcaseProjects],
+  );
+
+  function selectCategory(categoryId: WorkSectionCategoryId) {
+    setSearchParams({ category: categoryId });
   }
 
   function selectFilter(filter: string) {
-    setSearchParams(filter === 'All' ? { category: activeCategory } : { category: activeCategory, filter });
+    setSearchParams(
+      filter === 'All' ? { category: activeCategoryId } : { category: activeCategoryId, filter },
+    );
   }
 
   function moveCategory(currentIndex: number, direction: number) {
-    const nextIndex = (currentIndex + direction + portfolioCategories.length) % portfolioCategories.length;
-    const next = portfolioCategories[nextIndex];
+    const nextIndex = (currentIndex + direction + workSectionCategories.length) % workSectionCategories.length;
+    const next = workSectionCategories[nextIndex];
     selectCategory(next.id);
-    document.getElementById(`portfolio-tab-${next.id}`)?.focus();
+    document.getElementById(`work-section-tab-${next.id}`)?.focus();
   }
 
   return (
     <>
       <Seo
         title="Work"
-        description="Explore Tekzura projects across digital marketing, web development, SaaS, Shopify, and WordPress."
+        description="Explore Tekzura client work and public product examples — digital marketing, web, SaaS, Shopify, WordPress, apps, and websites with live links."
         path="/work"
       />
       <PageHero
-        eyebrow="Portfolio"
-        title="A connected view of the work we have delivered."
-        description={`Explore ${portfolioStats.entries}+ projects and digital channels through interactive service dashboards, then visit the live work directly.`}
+        eyebrow=""
+        title="Client delivery and product work in one place."
+        description={`${workSectionStats.total} public projects across ${workSectionStats.serviceAreas} service areas — client-facing delivery plus product examples you can click through and verify.`}
         theme="dark"
       >
-        <a className="button button-primary" href="#portfolio-explorer">Explore the portfolio <ArrowRight aria-hidden="true" /></a>
+        
       </PageHero>
-      <section className="section portfolio-section" id="portfolio-explorer">
+
+      <section className="section work-stats-band" aria-label="Portfolio statistics">
+        <div className="container">
+          <div className="work-stats-panel work-stats-panel-combined">
+            <article>
+              <strong>{workSectionStats.total}</strong>
+              <span>Projects</span>
+            </article>
+            <article>
+              <strong>{workSectionStats.clientProjects}</strong>
+              <span>Client-facing</span>
+            </article>
+            <article>
+              <strong>{workSectionStats.productExamples}</strong>
+              <span>Product-facing</span>
+            </article>
+            <article>
+              <strong>{workSectionStats.serviceAreas}</strong>
+              <span>Categories</span>
+            </article>
+            <article>
+              <strong>{workSectionStats.industries}</strong>
+              <span>Industries</span>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section className="section portfolio-section work-unified-section" id="work-explorer">
         <div className="container">
           <div className="work-intro">
             <div>
-              <p className="eyebrow">Service portfolio</p>
-              <h2>Witness the impact of our work across various industries and markets.</h2>
+              
+              <h2>Witness the impact from the successful implementation of our projects.</h2>
             </div>
-            <p>Each Story tells a unique tale of how we've helped clients achieve their goals.</p>
+            <p>
+              Every project is delivered with a clear understanding of the business problem, the solution, and the intended business outcome.
+            </p>
           </div>
 
-          <div className="portfolio-category-tabs" role="tablist" aria-label="Portfolio service categories">
-            {portfolioCategories.map((category, index) => {
-              const count = portfolioEntries.filter((entry) => entry.category === category.id).length;
+          <div className="work-unified-tabs work-unified-tabs-merged" role="tablist" aria-label="Portfolio categories">
+            {workSectionCategories.map((category, index) => {
+              const count = countWorkSectionCategory(category.id);
               return (
                 <button
                   key={category.id}
-                  id={`portfolio-tab-${category.id}`}
+                  id={`work-section-tab-${category.id}`}
                   type="button"
                   role="tab"
-                  aria-selected={activeCategory === category.id}
-                  aria-controls="portfolio-category-panel"
-                  tabIndex={activeCategory === category.id ? 0 : -1}
+                  aria-selected={activeCategoryId === category.id}
+                  aria-controls="work-section-panel"
+                  tabIndex={activeCategoryId === category.id ? 0 : -1}
                   onClick={() => selectCategory(category.id)}
                   onKeyDown={(event) => {
                     if (event.key === 'ArrowRight' || event.key === 'ArrowDown') {
@@ -97,14 +136,14 @@ export default function WorkPage() {
                     }
                     if (event.key === 'Home') {
                       event.preventDefault();
-                      selectCategory(portfolioCategories[0].id);
-                      document.getElementById(`portfolio-tab-${portfolioCategories[0].id}`)?.focus();
+                      selectCategory(workSectionCategories[0].id);
+                      document.getElementById(`work-section-tab-${workSectionCategories[0].id}`)?.focus();
                     }
                     if (event.key === 'End') {
                       event.preventDefault();
-                      const last = portfolioCategories.at(-1)!;
+                      const last = workSectionCategories.at(-1)!;
                       selectCategory(last.id);
-                      document.getElementById(`portfolio-tab-${last.id}`)?.focus();
+                      document.getElementById(`work-section-tab-${last.id}`)?.focus();
                     }
                   }}
                   style={{ '--category-accent': category.accent } as React.CSSProperties}
@@ -118,60 +157,45 @@ export default function WorkPage() {
           </div>
 
           <div
-            className="portfolio-category-panel"
-            id="portfolio-category-panel"
+            className="work-unified-panel-wrap"
+            id="work-section-panel"
             role="tabpanel"
-            aria-labelledby={`portfolio-tab-${activeCategory}`}
-            key={activeCategory}
+            aria-labelledby={`work-section-tab-${activeCategoryId}`}
+            key={activeCategoryId}
           >
-            <div className="portfolio-category-copy">
-              <span>{categoryEntries.length} delivered projects</span>
-              <h2>{active.title}</h2>
-              <p>{active.description}</p>
-              <div>
-                {filters.filter((filter) => filter !== 'All').slice(0, 4).map((filter) => <small key={filter}>{filter}</small>)}
-              </div>
-            </div>
-            <PortfolioDashboard category={active} entries={categoryEntries} />
+            <WorkProjectsDashboard category={showcaseCategory} projects={showcaseProjects} />
           </div>
 
-          <div className="work-toolbar portfolio-toolbar">
-            <div className="work-filter-group">
-              <span className="work-filter-label"><SlidersHorizontal aria-hidden="true" /> Filter {active.title}</span>
-              <div className="filter-bar" aria-label={`Filter ${active.title} projects`}>
-                {filters.map((filter) => (
-                  <button
-                    key={filter}
-                    type="button"
-                    className={activeFilter === filter ? 'active' : ''}
-                    aria-pressed={activeFilter === filter}
-                    onClick={() => selectFilter(filter)}
-                  >
-                    {filter}
-                  </button>
-                ))}
-              </div>
-            </div>
-            <p className="results-count" aria-live="polite"><BriefcaseBusiness aria-hidden="true" /> {filteredEntries.length} {filteredEntries.length === 1 ? 'project' : 'projects'} showcased</p>
-          </div>
+          
 
-          <div className="portfolio-link-grid filter-results" key={`${activeCategory}-${activeFilter}`}>
-            {filteredEntries.map((entry, index) => <PortfolioLinkCard key={`${entry.category}-${entry.url}`} entry={entry} index={index} />)}
-          </div>
+         
         </div>
       </section>
 
-      <section className="section section-soft delivery-stories">
+      <ConversionCTA
+        eyebrow="Ready to build"
+        title="Want your project to look this credible?"
+        description="Tell us what you want to launch, improve, or grow. We will turn the idea into a clear product, engineering, and growth roadmap."
+        bullets={['Project-fit review', 'Technical direction', 'Launch roadmap']}
+        tone="dark"
+      />
+
+      {/* <section className="section section-soft delivery-stories">
         <div className="container">
           <div className="work-intro">
-            <div><p className="eyebrow">Featured delivery stories</p><h2>A closer look at the operating challenge behind the work.</h2></div>
-            <p>These representative engagements add context around the problem, delivery approach, and intended outcome.</p>
+            <div>
+              <p className="eyebrow">Delivery stories</p>
+              <h2>The problem behind the polished interface.</h2>
+            </div>
+            <p>Selected examples with context around the challenge, approach, and intended business outcome.</p>
           </div>
           <div className="case-grid">
-            {caseStudies.map((item, index) => <CaseStudyCard key={item.title} item={item} index={index} expandable={false} />)}
+            {caseStudies.map((item, index) => (
+              <CaseStudyCard key={item.title} item={item} index={index} expandable={false} />
+            ))}
           </div>
         </div>
-      </section>
+      </section> */}
     </>
   );
 }

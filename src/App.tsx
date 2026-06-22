@@ -8,7 +8,9 @@ const ServicesPage = lazy(() => import('./pages/ServicesPage'));
 const ServiceDetailPage = lazy(() => import('./pages/ServiceDetailPage'));
 const WorkPage = lazy(() => import('./pages/WorkPage'));
 const BlogPage = lazy(() => import('./pages/BlogPage'));
+const CaseStudyDetailPage = lazy(() => import('./pages/CaseStudyDetailPage'));
 const ContactPage = lazy(() => import('./pages/ContactPage'));
+const GetStartedPage = lazy(() => import('./pages/GetStartedPage'));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 
 function PageLoader() {
@@ -41,7 +43,9 @@ export default function App() {
             <Route path="services/:serviceSlug" element={<ServiceDetailPage />} />
             <Route path="work" element={<WorkPage />} />
             <Route path="blog" element={<BlogPage />} />
+            <Route path="blog/:slug" element={<CaseStudyDetailPage />} />
             <Route path="contact" element={<ContactPage />} />
+            <Route path="get-started" element={<GetStartedPage />} />
             <Route path="home" element={<Navigate to="/" replace />} />
             <Route path="*" element={<NotFoundPage />} />
           </Route>

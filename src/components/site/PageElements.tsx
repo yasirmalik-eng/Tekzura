@@ -49,7 +49,7 @@ export function SectionHeading({
   return (
     <div className={`section-heading ${align === 'center' ? 'center' : ''}`}>
       <p className="eyebrow">{eyebrow}</p>
-      <h2>{title}</h2>
+      <h2 className="section-title">{title}</h2>
       {description && <p>{description}</p>}
     </div>
   );

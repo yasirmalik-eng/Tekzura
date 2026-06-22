@@ -11,7 +11,6 @@ import {
   Instagram,
   Layers3,
   Linkedin,
-  LockKeyhole,
   Megaphone,
   MonitorSmartphone,
   PackageCheck,
@@ -48,23 +47,22 @@ function MarketingDashboard({ entries }: { entries: PortfolioEntry[] }) {
 
 function WebDashboard({ entries }: { entries: PortfolioEntry[] }) {
   const apps = entries.filter((entry) => entry.platform === 'Web App').length;
-  const staging = entries.filter((entry) => entry.isStaging).length;
-  const login = entries.filter((entry) => entry.requiresLogin).length;
+  const websites = entries.filter((entry) => entry.platform === 'Website').length;
 
   return (
-    <div className="portfolio-visual web-dashboard" role="img" aria-label="Web development portfolio dashboard showing websites, web applications, staging links, and login-based applications">
+    <div className="portfolio-visual web-dashboard" role="img" aria-label="Web development portfolio dashboard showing public websites and product interfaces">
       <div className="portfolio-browser">
         <div className="portfolio-browser-bar"><i /><i /><i /><span>delivery.tekzura.dev</span></div>
         <div className="portfolio-browser-body">
           <aside><Braces /><i className="active" /><i /><i /><i /></aside>
           <div>
             <span>Responsive delivery system</span>
-            <strong>Web experiences across public sites and product applications.</strong>
+            <strong>Public-facing web experiences built for clarity, speed, and conversion.</strong>
             <div className="web-dashboard-metrics">
-              <article><MonitorSmartphone /><b>{entries.length}</b><small>Project links</small></article>
-              <article><PanelsTopLeft /><b>{apps}</b><small>Web apps</small></article>
-              <article><Workflow /><b>{staging}</b><small>Staging links</small></article>
-              <article><LockKeyhole /><b>{login}</b><small>App access</small></article>
+              <article><MonitorSmartphone /><b>{entries.length}</b><small>Public projects</small></article>
+              <article><Globe2 /><b>{websites}</b><small>Websites</small></article>
+              <article><PanelsTopLeft /><b>{apps}</b><small>Product UIs</small></article>
+              <article><CheckCircle2 /><b>{entries.length}</b><small>Live links</small></article>
             </div>
           </div>
         </div>
@@ -171,6 +169,8 @@ function PlatformIcon({ platform }: { platform: PortfolioEntry['platform'] }) {
 
 export function PortfolioLinkCard({ entry, index }: { entry: PortfolioEntry; index: number }) {
   const displayUrl = new URL(entry.url).hostname.replace(/^www\./, '');
+  const descriptor = entry.subcategory || (entry.linkType === 'social' ? 'Social growth channel' : `${entry.platform} delivery`);
+  const actionLabel = entry.linkType === 'social' ? 'Open Channel' : 'View Live Project';
   return (
     <article className="portfolio-link-card">
       <div className="portfolio-link-card-top">
@@ -182,16 +182,14 @@ export function PortfolioLinkCard({ entry, index }: { entry: PortfolioEntry; ind
       <div className="portfolio-link-copy">
         <div className="portfolio-link-badges">
           <span>{entry.platform}</span>
-          {entry.isStaging && <span className="status-staging">Staging</span>}
-          {entry.requiresLogin && <span className="status-login"><LockKeyhole aria-hidden="true" /> Login</span>}
           {entry.linkType === 'live' && <span className="status-live"><CheckCircle2 aria-hidden="true" /> Public</span>}
         </div>
         <h3>{entry.title}</h3>
         <p>{displayUrl}</p>
-        <small>{entry.subcategory || `${entry.platform} delivery`}</small>
+        <small>{descriptor}</small>
       </div>
       <a href={entry.url} target="_blank" rel="noopener noreferrer" aria-label={`Visit ${entry.title} project`}>
-        <span>View Live Project</span><ExternalLink aria-hidden="true" />
+        <span>{actionLabel}</span><ExternalLink aria-hidden="true" />
       </a>
     </article>
   );

@@ -1,13 +1,19 @@
 import { useEffect, useRef, useState } from 'react';
-import { ArrowRight, CalendarDays, ChevronDown, Mail, Menu, X } from 'lucide-react';
+import { createPortal } from 'react-dom';
+import { ArrowRight, CalendarDays, ChevronDown, Menu, MessageSquare, PhoneCall, Send, X } from 'lucide-react';
 import { Link, NavLink, Outlet, useLocation } from 'react-router-dom';
 import { services, siteConfig } from '../../content/site';
+import Chatbot, { OPEN_CHAT_EVENT } from './Chatbot';
+
+function openChat() {
+  window.dispatchEvent(new CustomEvent(OPEN_CHAT_EVENT));
+}
 
 const navigation = [
   { label: 'About', to: '/about' },
   { label: 'Work', to: '/work' },
   { label: 'Insights', to: '/blog' },
-  { label: 'Contact', to: '/contact' },
+  { label: 'Talk to sales', to: '/contact' },
 ];
 
 function ScrollManager() {
@@ -32,6 +38,15 @@ export default function SiteShell() {
   const [servicesOpen, setServicesOpen] = useState(false);
   const mobileNavRef = useRef<HTMLDivElement>(null);
   const { pathname } = useLocation();
+  const hasDedicatedConversion = (
+    pathname === '/about' ||
+    pathname === '/work' ||
+    pathname === '/blog' ||
+    pathname.startsWith('/blog/') ||
+    pathname === '/get-started' ||
+    pathname === '/contact' ||
+    pathname.startsWith('/services')
+  );
 
   useEffect(() => {
     setMenuOpen(false);
@@ -39,6 +54,7 @@ export default function SiteShell() {
   }, [pathname]);
 
   useEffect(() => {
+    document.documentElement.classList.toggle('menu-lock', menuOpen);
     document.body.classList.toggle('menu-lock', menuOpen);
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
@@ -48,6 +64,7 @@ export default function SiteShell() {
     };
     window.addEventListener('keydown', onKeyDown);
     return () => {
+      document.documentElement.classList.remove('menu-lock');
       document.body.classList.remove('menu-lock');
       window.removeEventListener('keydown', onKeyDown);
     };
@@ -101,9 +118,13 @@ export default function SiteShell() {
               </NavLink>
             ))}
           </nav>
+          <button type="button" className="header-chat-link" onClick={openChat}>
+            <MessageSquare aria-hidden="true" />
+            Ask Tekzura AI
+          </button>
           <a className="button button-primary header-cta" href={siteConfig.calendly} target="_blank" rel="noreferrer">
-            <CalendarDays aria-hidden="true" />
-            Book a Strategy Call
+            <PhoneCall aria-hidden="true" />
+            Let's Talk
           </a>
           <button
             className="icon-button menu-button"
@@ -147,44 +168,53 @@ export default function SiteShell() {
           </div>
         </div>
       </header>
-      <div
-        ref={mobileNavRef}
-        id="mobile-navigation"
-        className={`mobile-nav ${menuOpen ? 'open' : ''}`}
-        aria-hidden={!menuOpen}
-        onKeyDown={trapMobileFocus}
-      >
-        <nav className="container" aria-label="Mobile navigation">
-          <span className="mobile-nav-label">Navigate</span>
-          {navigation.slice(0, 1).map((item) => <NavLink key={item.to} to={item.to}>{item.label}</NavLink>)}
-          <Link to="/services">Services</Link>
-          <div className="mobile-service-links">
-            {services.slice(0, 4).map((service) => <Link key={service.slug} to={`/services/${service.slug}`}>{service.shortTitle}</Link>)}
-          </div>
-          {navigation.slice(1).map((item) => <NavLink key={item.to} to={item.to}>{item.label}</NavLink>)}
-          <a href={siteConfig.calendly} target="_blank" rel="noreferrer">Book a Strategy Call</a>
-        </nav>
-      </div>
+      {createPortal(
+        <div
+          ref={mobileNavRef}
+          id="mobile-navigation"
+          className={`mobile-nav ${menuOpen ? 'open' : ''}`}
+          aria-hidden={!menuOpen}
+          onKeyDown={trapMobileFocus}
+        >
+          <nav className="container" aria-label="Mobile navigation">
+            <span className="mobile-nav-label">Navigate</span>
+            {navigation.slice(0, 1).map((item) => <NavLink key={item.to} to={item.to}>{item.label}</NavLink>)}
+            <Link to="/services">Services</Link>
+            <div className="mobile-service-links">
+              {services.slice(0, 4).map((service) => <Link key={service.slug} to={`/services/${service.slug}`}>{service.shortTitle}</Link>)}
+            </div>
+            {navigation.slice(1).map((item) => <NavLink key={item.to} to={item.to}>{item.label}</NavLink>)}
+            <Link className="mobile-nav-cta" to="/get-started">Start a Project</Link>
+            <button type="button" className="mobile-nav-chat" onClick={openChat}>
+              <MessageSquare aria-hidden="true" /> Chat with us
+            </button>
+            <a href={siteConfig.calendly} target="_blank" rel="noreferrer">Book a Strategy Call</a>
+          </nav>
+        </div>,
+        document.body,
+      )}
 
       <main id="main-content"><Outlet /></main>
 
-      <section className="cta-band" aria-labelledby="cta-title">
-        <div className="container cta-band-inner">
-          <div>
-            <p className="eyebrow eyebrow-light">Start with a focused conversation</p>
-            <h2 id="cta-title">Have a digital project in mind?</h2>
-            <p>Tell us what you are trying to improve. We will help identify a practical next step.</p>
+      {!hasDedicatedConversion && (
+        <section className="cta-band" aria-labelledby="cta-title">
+          <div className="container cta-band-inner">
+            <div>
+              <p className="eyebrow eyebrow-light">Start with a focused conversation</p>
+              <h2 id="cta-title">Have a digital project in mind?</h2>
+              <p>Tell us what you are trying to improve. We will help identify a practical next step.</p>
+            </div>
+            <div className="button-row">
+              <Link className="button button-light" to="/get-started">
+                <Send aria-hidden="true" /> Start a Project
+              </Link>
+              <a className="button button-outline-light" href={siteConfig.calendly} target="_blank" rel="noreferrer">
+                <CalendarDays aria-hidden="true" /> Book a Call
+              </a>
+            </div>
           </div>
-          <div className="button-row">
-            <a className="button button-light" href={siteConfig.calendly} target="_blank" rel="noreferrer">
-              <CalendarDays aria-hidden="true" /> Book a Call
-            </a>
-            <a className="button button-outline-light" href={`mailto:${siteConfig.email}`}>
-              <Mail aria-hidden="true" /> Email Tekzura
-            </a>
-          </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       <footer className="site-footer">
         <div className="container footer-grid">
@@ -197,7 +227,8 @@ export default function SiteShell() {
             <Link to="/about">About</Link>
             <Link to="/work">Work</Link>
             <Link to="/blog">Insights</Link>
-            <Link to="/contact">Contact</Link>
+            <Link to="/get-started">Get Started</Link>
+            <Link to="/contact">Talk to sales</Link>
           </div>
           <div>
             <h2>Services</h2>
@@ -210,7 +241,7 @@ export default function SiteShell() {
             <a href={`mailto:${siteConfig.email}`}>{siteConfig.email}</a>
             <a href={`tel:${siteConfig.phoneHref}`}>{siteConfig.phone}</a>
             <span>{siteConfig.address}</span>
-            <Link className="footer-action" to="/contact">Contact Details <ArrowRight aria-hidden="true" /></Link>
+            <Link className="footer-action" to="/contact">Talk to sales <ArrowRight aria-hidden="true" /></Link>
           </div>
         </div>
         <div className="container footer-bottom">
@@ -218,6 +249,8 @@ export default function SiteShell() {
           <span>Digital solutions built with clarity.</span>
         </div>
       </footer>
+
+      <Chatbot />
     </>
   );
 }

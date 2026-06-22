@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="840" viewBox="0 0 720 840" role="img" aria-labelledby="title desc">
+  <title id="title">Female profile portrait icon</title>
+  <desc id="desc">A professional illustrated female profile placeholder.</desc>
+  <defs>
+    <linearGradient id="bg" x1="70" y1="54" x2="650" y2="790" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFF1F8"/>
+      <stop offset="1" stop-color="#EEF6FF"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="228" y1="172" x2="503" y2="676" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#B4237A"/>
+      <stop offset="1" stop-color="#155EEF"/>
+    </linearGradient>
+    <filter id="shadow" x="117" y="111" width="486" height="594" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="22" stdDeviation="26" flood-color="#0B1220" flood-opacity=".16"/>
+    </filter>
+  </defs>
+  <rect width="720" height="840" rx="46" fill="url(#bg)"/>
+  <circle cx="586" cy="122" r="104" fill="#B4237A" opacity=".10"/>
+  <circle cx="126" cy="716" r="148" fill="#155EEF" opacity=".10"/>
+  <g filter="url(#shadow)">
+    <path d="M226 360c0-105 48-184 134-184s134 79 134 184v66H226v-66Z" fill="url(#accent)"/>
+    <circle cx="360" cy="318" r="94" fill="#F8FAFF"/>
+    <path d="M252 296c21-77 83-116 154-96 49 14 79 52 85 101-39-10-72-33-95-68-31 43-79 64-144 63Z" fill="url(#accent)"/>
+    <path d="M187 637c21-108 92-168 173-168s152 60 173 168c4 21-12 40-34 40H221c-22 0-38-19-34-40Z" fill="#FFFFFF"/>
+    <path d="M228 636c19-70 69-108 132-108s113 38 132 108H228Z" fill="url(#accent)"/>
+    <path d="M298 483c14 26 34 39 62 39s48-13 62-39" fill="none" stroke="#E4D8EA" stroke-width="18" stroke-linecap="round"/>
+  </g>
+</svg>
