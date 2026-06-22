@@ -52,7 +52,7 @@ export default async function handler(req: Request): Promise<Response> {
     return json({ error: 'Method not allowed' }, 405, origin);
   }
   if (!API_KEY) {
-    return json({ error: 'Chat is not configured.' }, 503, origin);
+    return json({ error: 'Chat is not configured.', fallbackToLead: true }, 503, origin);
   }
   if (ALLOWED_ORIGINS.length > 0 && origin && !ALLOWED_ORIGINS.includes(origin)) {
     return json({ error: 'Origin not allowed.' }, 403, origin);

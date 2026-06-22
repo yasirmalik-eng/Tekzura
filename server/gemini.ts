@@ -70,7 +70,12 @@ export function sanitizeContext(value: unknown): string {
 
 export interface ChatResult {
   status: number;
-  body: { reply?: string; error?: string };
+  body: { reply?: string; error?: string; fallbackToLead?: boolean };
+}
+
+function shouldFallbackToLead(status: number, detail: string): boolean {
+  if (RETRYABLE_GEMINI_STATUSES.has(status)) return true;
+  return /quota|rate limit|high demand|unavailable|overloaded|resource exhausted/i.test(detail);
 }
 
 export async function generateChatReply(
@@ -120,7 +125,10 @@ export async function generateChatReply(
         }
         return {
           status: 502,
-          body: { error: friendly || 'The assistant is unavailable right now.' },
+          body: {
+            error: friendly || 'The assistant is unavailable right now.',
+            fallbackToLead: shouldFallbackToLead(response.status, detail),
+          },
         };
       }
 
@@ -130,15 +138,15 @@ export async function generateChatReply(
       const reply = data.candidates?.[0]?.content?.parts?.map((p) => p.text).join('').trim();
 
       if (!reply) {
-        return { status: 502, body: { error: 'The assistant could not generate a reply.' } };
+        return { status: 502, body: { error: 'The assistant could not generate a reply.', fallbackToLead: true } };
       }
 
       return { status: 200, body: { reply } };
     }
 
-    return { status: 502, body: { error: 'The assistant is unavailable right now.' } };
+    return { status: 502, body: { error: 'The assistant is unavailable right now.', fallbackToLead: true } };
   } catch (error) {
     console.error('Chat proxy failed:', error);
-    return { status: 502, body: { error: 'The assistant is unavailable right now.' } };
+    return { status: 502, body: { error: 'The assistant is unavailable right now.', fallbackToLead: true } };
   }
 }

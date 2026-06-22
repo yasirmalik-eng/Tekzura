@@ -112,6 +112,12 @@ const suggestionCards = [
 
 const mobileChatQuery = '(max-width: 640px)';
 
+function shouldOpenCallback(status: number, reason: string, fallbackToLead?: boolean) {
+  if (fallbackToLead) return true;
+  if (status === 429 || status === 503 || status === 502) return true;
+  return /rate.?limit|quota|high demand|unavailable|busy|not configured|assistant is unavailable|could not generate/i.test(reason);
+}
+
 export default function Chatbot() {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
@@ -128,6 +134,7 @@ export default function Chatbot() {
   const [leadSent, setLeadSent] = useState(false);
   const [leadError, setLeadError] = useState('');
   const [leadSending, setLeadSending] = useState(false);
+  const [leadFallback, setLeadFallback] = useState(false);
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -182,6 +189,12 @@ export default function Chatbot() {
     navigate(path);
   }
 
+  function openCallbackFallback() {
+    setError('');
+    setLeadFallback(true);
+    setShowLead(true);
+  }
+
   async function send(text: string) {
     const trimmed = text.trim();
     if (!trimmed || sending) return;
@@ -201,18 +214,24 @@ export default function Chatbot() {
           messages: next.map((m) => ({ role: m.role, content: m.content })),
         }),
       });
-      const data = (await res.json().catch(() => null)) as { reply?: string; error?: string } | null;
-      if (!res.ok || !data?.reply) throw new Error(data?.error || `Chat request failed (${res.status})`);
-      setMessages((prev) => [...prev, { role: 'assistant', content: data.reply as string }]);
-    } catch (err) {
-      const reason = err instanceof Error ? err.message : '';
-      if (/not configured|GEMINI_API_KEY/i.test(reason)) {
-        setError('AI chat is not configured on the server yet (missing GEMINI_API_KEY). Use Request a callback below, or add the key in Vercel and redeploy.');
-      } else if (reason) {
-        setError(`${reason} Try again, or use Request a callback below.`);
-      } else {
-        setError('The assistant is unavailable right now. Try again, or use Request a callback below.');
+      const data = (await res.json().catch(() => null)) as {
+        reply?: string;
+        error?: string;
+        fallbackToLead?: boolean;
+      } | null;
+
+      if (!res.ok || !data?.reply) {
+        const reason = data?.error || `Chat request failed (${res.status})`;
+        if (shouldOpenCallback(res.status, reason, data?.fallbackToLead)) {
+          openCallbackFallback();
+          return;
+        }
+        throw new Error(reason);
       }
+
+      setMessages((prev) => [...prev, { role: 'assistant', content: data.reply as string }]);
+    } catch {
+      openCallbackFallback();
     } finally {
       setSending(false);
     }
@@ -220,6 +239,7 @@ export default function Chatbot() {
 
   function closeLeadForm() {
     setShowLead(false);
+    setLeadFallback(false);
     setLeadError('');
   }
 
@@ -364,7 +384,11 @@ export default function Chatbot() {
           {/* Lead capture form */}
           {showLead && !leadSent && (
             <form className="chat-lead" onSubmit={handleLeadSubmit} noValidate>
-              <p className="chat-lead-title">Leave your details — we will reach out.</p>
+              <p className="chat-lead-title">
+                {leadFallback
+                  ? 'Our assistant is at capacity right now — share your details and our team will follow up.'
+                  : 'Leave your details — we will reach out.'}
+              </p>
               <label className="chat-visually-hidden" htmlFor="chat-lead-name">Your name</label>
               <input id="chat-lead-name" name="name" type="text" autoComplete="name"
                 placeholder="Your name…" value={leadName} onChange={(e) => setLeadName(e.target.value)} />
@@ -392,7 +416,7 @@ export default function Chatbot() {
         {/* Input area */}
         <div className="chat-input-area">
           {!showLead && !leadSent && !isWelcome && (
-            <button type="button" className="chat-callback-btn" onClick={() => setShowLead(true)}>
+            <button type="button" className="chat-callback-btn" onClick={() => { setLeadFallback(false); setShowLead(true); }}>
               Request a callback →
             </button>
           )}
