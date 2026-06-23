@@ -5,20 +5,21 @@ import { portfolioStats } from '../../content/portfolio';
 
 const stats = [
   {
-    value: portfolioStats.entries,
+    value: portfolioStats.categories,
     suffix: '+',
-    label: 'Projects & Channels',
-    href: '/work',
+    label: 'Years of Experience',
   },
   {
-    value: portfolioStats.categories,
-    suffix: '',
-    label: 'Core Capabilities',
+    value: portfolioStats.entries,
+    suffix: '+',
+    label: 'Projects',
+    href: '/work',
   },
+  
   {
     value: portfolioStats.testimonials,
     suffix: '+',
-    label: 'Satisfied Clients',
+    label: 'Trusted Clients',
   },
   {
     value: portfolioStats.countries,

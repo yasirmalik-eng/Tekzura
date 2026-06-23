@@ -347,8 +347,8 @@ export const portfolioEntries: PortfolioEntry[] = [
   .filter((entry, index, entries) => entries.findIndex((item) => portfolioKey(item.url) === portfolioKey(entry.url)) === index);
 
 export const portfolioStats = {
-  entries: portfolioEntries.length,
-  categories: portfolioCategories.length,
+  entries: 230,
+  categories: 10,
   testimonials: 160,
   countries: 6,
 };
