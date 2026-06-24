@@ -6,11 +6,13 @@ const HomePage = lazy(() => import('./pages/HomePage'));
 const AboutPage = lazy(() => import('./pages/AboutPage'));
 const ServicesPage = lazy(() => import('./pages/ServicesPage'));
 const ServiceDetailPage = lazy(() => import('./pages/ServiceDetailPage'));
+const PackageBuilderPage = lazy(() => import('./pages/PackageBuilderPage'));
 const WorkPage = lazy(() => import('./pages/WorkPage'));
 const BlogPage = lazy(() => import('./pages/BlogPage'));
 const CaseStudyDetailPage = lazy(() => import('./pages/CaseStudyDetailPage'));
 const ContactPage = lazy(() => import('./pages/ContactPage'));
 const GetStartedPage = lazy(() => import('./pages/GetStartedPage'));
+const ProcessPage = lazy(() => import('./pages/ProcessPage'));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 
 function PageLoader() {
@@ -41,10 +43,12 @@ export default function App() {
             <Route path="about" element={<AboutPage />} />
             <Route path="services" element={<ServicesPage />} />
             <Route path="services/:serviceSlug" element={<ServiceDetailPage />} />
+            <Route path="build-package" element={<PackageBuilderPage />} />
             <Route path="work" element={<WorkPage />} />
             <Route path="blog" element={<BlogPage />} />
             <Route path="blog/:slug" element={<CaseStudyDetailPage />} />
             <Route path="contact" element={<ContactPage />} />
+            <Route path="process" element={<ProcessPage />} />
             <Route path="get-started" element={<GetStartedPage />} />
             <Route path="home" element={<Navigate to="/" replace />} />
             <Route path="*" element={<NotFoundPage />} />

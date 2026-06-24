@@ -11,7 +11,7 @@ export interface LeadFields {
   message: string;
 }
 
-export type LeadSource = 'get-started' | 'chatbot' | 'contact';
+export type LeadSource = 'get-started' | 'chatbot' | 'contact' | 'package-builder';
 
 const web3FormsAccessKey = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY?.trim();
 const web3FormsEndpoint = 'https://api.web3forms.com/submit';
@@ -21,6 +21,7 @@ const sourceLabel: Record<LeadSource, string> = {
   'get-started': 'Tekzura Get Started form',
   chatbot: 'Tekzura AI assistant',
   contact: 'Tekzura Contact form',
+  'package-builder': 'Tekzura Package Builder',
 };
 
 export function isValidEmail(value: string) {
@@ -128,4 +129,66 @@ export async function submitLead(fields: LeadFields, source: LeadSource): Promis
   // If Web3Forms is configured, email delivery is required. Supabase storage
   // alone should not show a success state because the user expects an email.
   return { ok: web3FormsAccessKey ? web3Succeeded : supabaseSucceeded, usedFallback: false };
+}
+
+export interface PackageQuoteFields {
+  reference: string;
+  name: string;
+  email: string;
+  business: string;
+  whatsapp: string;
+  location: string;
+  businessDescription: string;
+  projectDetails: string;
+  existingWebsite: string;
+  budget: string;
+  timeline: string;
+  hearAbout: string;
+  selectedServices: string[];
+  quoteSummary: string;
+  estimatedOneTimeTotal: string;
+  monthlyTotal: string;
+  attachmentName?: string;
+}
+
+export function buildPackageQuoteMessage(fields: PackageQuoteFields) {
+  const lines = [
+    `Reference: ${fields.reference}`,
+    '',
+    'Selected services:',
+    ...fields.selectedServices.map((service) => `- ${service}`),
+    '',
+    fields.quoteSummary,
+    '',
+    `Estimated one-time total: ${fields.estimatedOneTimeTotal}`,
+    `Monthly services total: ${fields.monthlyTotal}`,
+    '',
+    `Business: ${fields.businessDescription}`,
+    '',
+    fields.projectDetails,
+    '',
+    `Existing website: ${fields.existingWebsite || 'n/a'}`,
+    `Budget: ${fields.budget}`,
+    `Timeline: ${fields.timeline}`,
+    `How they found us: ${fields.hearAbout}`,
+    `Location: ${fields.location || 'n/a'}`,
+    `WhatsApp: ${fields.whatsapp}`,
+  ];
+  if (fields.attachmentName) lines.push(`Attachment: ${fields.attachmentName}`);
+  return lines.join('\n');
+}
+
+export async function submitPackageQuote(fields: PackageQuoteFields): Promise<LeadSubmitResult> {
+  return submitLead(
+    {
+      name: fields.name,
+      email: fields.email,
+      company: fields.business || fields.location,
+      service: fields.selectedServices.join(', '),
+      budget: fields.budget,
+      timeline: fields.timeline,
+      message: buildPackageQuoteMessage(fields),
+    },
+    'package-builder',
+  );
 }
