@@ -1,5 +1,6 @@
 import { ArrowRight, CalendarDays } from 'lucide-react';
 import { Link, useParams } from 'react-router-dom';
+import PackageBuilderButton from '../components/site/PackageBuilderButton';
 import { CheckList, PageHero, SectionHeading } from '../components/site/PageElements';
 import { ServiceDeliveryProcess } from '../components/site/InteractiveSections';
 import Seo from '../components/site/Seo';
@@ -37,6 +38,7 @@ export default function ServiceDetailPage() {
             <CalendarDays aria-hidden="true" /> {service.cta}
           </a>
           <Link className="button button-secondary" to="/work">See Related Work <ArrowRight aria-hidden="true" /></Link>
+          <PackageBuilderButton preselect={service.slug} label="Add to custom package" variant="text" />
         </div>
       </PageHero>
 
@@ -71,9 +73,12 @@ export default function ServiceDetailPage() {
           <div className="technology-panel impact-panel">
             <h2>Expected impact</h2>
             <p className="impact-statement">{service.impact}</p>
-            <a className="button button-primary" href={siteConfig.calendly} target="_blank" rel="noreferrer">
-              <CalendarDays aria-hidden="true" /> {service.cta}
-            </a>
+            <div className="impact-panel-actions">
+              <a className="button button-primary" href={siteConfig.calendly} target="_blank" rel="noreferrer">
+                <CalendarDays aria-hidden="true" /> {service.cta}
+              </a>
+              <PackageBuilderButton preselect={service.slug} label="Build custom package" variant="secondary" />
+            </div>
           </div>
         </div>
       </section>

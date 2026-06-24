@@ -1,4 +1,4 @@
-import { blogPosts, caseStudies, type CaseStudy } from './site';
+import { blogPosts, caseStudies, publicAsset, serviceImages, type CaseStudy } from './site';
 
 export interface InsightCaseStudy extends CaseStudy {
   slug: string;
@@ -14,48 +14,45 @@ function slugify(title: string) {
   return title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 }
 
-const unsplash = (photoId: string, width = 1200, height = 800) =>
-  `https://images.unsplash.com/${photoId}?auto=format&fit=crop&w=${width}&h=${height}&q=80`;
-
 const caseStudyImages: Record<string, { image: string; imageAlt: string }> = {
   'the-future-of-ai-in-business-automation': {
-    image: unsplash('photo-1677442136019-21780ecad995'),
-    imageAlt: 'Abstract AI neural network visualization on a digital screen',
+    image: publicAsset('/case-automation.jpg'),
+    imageAlt: 'Automation dashboard showing connected operational workflows',
   },
   'building-scalable-web-applications': {
-    image: unsplash('photo-1555066931-4365d14bab8c'),
+    image: publicAsset(serviceImages['full-stack-dev']),
     imageAlt: 'Developer workspace with code editor and web application architecture',
   },
   'mobile-first-design-why-it-matters': {
-    image: unsplash('photo-1512941937669-90a1b58e7e9c'),
+    image: publicAsset(serviceImages.shopify),
     imageAlt: 'Smartphones displaying responsive mobile interface layouts',
   },
   'maximizing-roi-with-data-driven-marketing': {
-    image: unsplash('photo-1551288049-bebda4e38f71'),
+    image: publicAsset(serviceImages['digital-marketing']),
     imageAlt: 'Marketing analytics dashboard with performance charts and KPIs',
   },
   'cloud-infrastructure-a-practical-guide': {
-    image: unsplash('photo-1451187580459-43490279c0fa'),
-    imageAlt: 'Global cloud network connectivity over a digital earth view',
+    image: publicAsset('/service-data-operations.jpg'),
+    imageAlt: 'Data specialist reviewing structured records and quality reporting',
   },
   'the-power-of-progressive-web-apps': {
-    image: unsplash('photo-1517694712202-14dd9538aa97'),
-    imageAlt: 'Laptop showing a progressive web app interface beside a coffee cup',
+    image: publicAsset(serviceImages['full-stack-dev']),
+    imageAlt: 'Responsive web product under review across desktop and mobile screens',
   },
   'modern-e-commerce-experience': {
-    image: unsplash('photo-1556742049-0cfed4f6a45d'),
+    image: publicAsset(serviceImages.shopify),
     imageAlt: 'Customer completing an online purchase on a modern e-commerce platform',
   },
   'operations-automation-program': {
-    image: unsplash('photo-1485827404703-89b55fcc595e'),
-    imageAlt: 'Robotic automation arm working in a modern operations environment',
+    image: publicAsset(serviceImages['marketing-automation']),
+    imageAlt: 'Business automation command center with connected workflow dashboards',
   },
-  'lead-generation-foundation': {
-    image: unsplash('photo-1552664730-d307ca884978'),
-    imageAlt: 'Sales team collaborating around a lead generation strategy session',
+  'digital-marketing-campaign-system': {
+    image: publicAsset(serviceImages['digital-marketing']),
+    imageAlt: 'Marketing team reviewing campaign performance and conversion funnel data',
   },
   'service-business-website-rebuild': {
-    image: unsplash('photo-1547658719-da2b51169166'),
+    image: publicAsset(serviceImages['full-stack-dev']),
     imageAlt: 'Designer reviewing a modern service business website layout',
   },
 };
@@ -79,7 +76,7 @@ const blogEnrichment: Record<
 > = {
   'The Future of AI in Business Automation': {
     industry: 'Professional Services',
-    service: 'automation-ai',
+    service: 'marketing-automation',
     challenge:
       'Operational teams were spending hours each week on repetitive data entry, status updates, and handoffs between tools that did not share a single source of truth.',
     solution:
@@ -113,7 +110,7 @@ const blogEnrichment: Record<
   },
   'Building Scalable Web Applications': {
     industry: 'Technology',
-    service: 'web-development',
+    service: 'full-stack-dev',
     challenge:
       'A growing product needed to support more users and faster release cycles without accumulating performance debt or fragile deployment practices.',
     solution:
@@ -147,7 +144,7 @@ const blogEnrichment: Record<
   },
   'Mobile-First Design: Why It Matters': {
     industry: 'Retail',
-    service: 'ecommerce',
+    service: 'shopify',
     challenge:
       'Most commerce traffic arrived on mobile, but the experience still behaved like a desktop site shrunk to a small screen — hurting discovery and checkout completion.',
     solution:
@@ -181,7 +178,7 @@ const blogEnrichment: Record<
   },
   'Maximizing ROI with Data-Driven Marketing': {
     industry: 'B2B Services',
-    service: 'lead-generation',
+    service: 'digital-marketing',
     challenge:
       'Marketing spend was spread across channels without a reliable way to connect campaigns to qualified conversations and revenue outcomes.',
     solution:
@@ -215,7 +212,7 @@ const blogEnrichment: Record<
   },
   'Cloud Infrastructure: A Practical Guide': {
     industry: 'SaaS',
-    service: 'saas',
+    service: 'full-stack-dev',
     challenge:
       'An early-stage platform needed reliable hosting, safer deployments, and cost visibility before user growth made infrastructure mistakes expensive.',
     solution:
@@ -249,7 +246,7 @@ const blogEnrichment: Record<
   },
   'The Power of Progressive Web Apps': {
     industry: 'Technology',
-    service: 'web-development',
+    service: 'full-stack-dev',
     challenge:
       'The business wanted mobile-like engagement — fast return visits and home-screen access — without maintaining separate native apps for two platforms.',
     solution:
@@ -328,24 +325,24 @@ const projectCaseStudyMeta: Record<string, { date: string; readTime: string; exc
       },
     ],
   },
-  'Lead Generation Foundation': {
+  'Digital Marketing Campaign System': {
     date: '2024-11-10',
     readTime: '5 min',
-    excerpt: 'Building a repeatable acquisition engine focused on qualified conversations instead of volume alone.',
-    highlights: ['Offer refinement', 'Landing content', 'Outreach workflows', 'CRM structure'],
+    excerpt: 'Building a coordinated digital marketing program focused on qualified conversations instead of volume alone.',
+    highlights: ['Offer refinement', 'Campaign landing pages', 'Paid & organic channels', 'Conversion tracking'],
     sections: [
       {
         heading: 'Project context',
         paragraphs: [
-          'The sales team had activity, but not enough consistency in lead quality or follow-up timing.',
-          'Campaigns existed, yet there was no shared system connecting marketing interest to sales action.',
+          'The sales team had activity, but campaigns were scattered and tracking made it hard to see what actually drove qualified leads.',
+          'Marketing and sales needed a shared system connecting channel performance to follow-up and conversion.',
         ],
       },
       {
         heading: 'Delivery summary',
         paragraphs: [
-          'Tekzura refined the offer, built focused landing experiences, and organized outreach and follow-up workflows around CRM stages.',
-          'The result was a clearer path from first touch to qualified conversation.',
+          'Tekzura refined the offer, built focused landing experiences, and organized paid and organic channels with clear attribution.',
+          'The result was a repeatable acquisition process built around relevant conversations instead of volume alone.',
         ],
       },
     ],
@@ -398,6 +395,9 @@ const blogDerived: InsightCaseStudy[] = blogPosts.map((post) => {
 
 const projectDerived: InsightCaseStudy[] = caseStudies.map((study) => {
   const meta = projectCaseStudyMeta[study.title];
+  if (!meta) {
+    throw new Error(`Missing projectCaseStudyMeta for "${study.title}"`);
+  }
   return withCaseStudyImage({
     ...study,
     slug: slugify(study.title),

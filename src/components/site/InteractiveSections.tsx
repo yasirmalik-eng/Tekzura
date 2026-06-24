@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { services, type Service, type ServiceSlug } from '../../content/site';
+import PackageBuilderButton from './PackageBuilderButton';
 import { SectionHeading } from './PageElements';
 
 export function Reveal({
@@ -48,9 +49,10 @@ export function Reveal({
 
 function ServiceDashboardVisual({ service }: { service: Service }) {
   const Icon = service.icon;
+  const slug = service.slug;
 
   return (
-    <div className={`service-dashboard-ui dashboard-${service.slug}`} aria-label={`${service.title} interactive dashboard preview`}>
+    <div className={`service-dashboard-ui dashboard-${slug}`} aria-label={`${service.title} interactive dashboard preview`}>
       <div className="dashboard-browser-bar">
         <span /><span /><span />
         <b>{service.shortTitle} workspace</b>
@@ -61,7 +63,7 @@ function ServiceDashboardVisual({ service }: { service: Service }) {
           {service.technologies.slice(0, 4).map((tech, index) => <i key={tech} className={index === 0 ? 'active' : ''} title={tech} />)}
         </aside>
         <div className="dashboard-workspace">
-          {service.slug === 'web-development' && (
+          {slug === 'full-stack-dev' && (
             <div className="web-product-preview">
               <div className="mini-toolbar"><span>tekzura.dev</span><i>Desktop</i><i>Mobile</i></div>
               <div className="mini-browser">
@@ -74,7 +76,7 @@ function ServiceDashboardVisual({ service }: { service: Service }) {
             </div>
           )}
 
-          {service.slug === 'ecommerce' && (
+          {slug === 'shopify' && (
             <div className="commerce-preview">
               <div className="mini-dashboard-title"><div><span>Store overview</span><strong>Commerce control room</strong></div><i>Live</i></div>
               <div className="commerce-metrics"><article><span>Orders</span><b>248</b><small>+18% this month</small></article><article><span>Conversion</span><b>4.8%</b><small>Healthy checkout</small></article></div>
@@ -85,7 +87,7 @@ function ServiceDashboardVisual({ service }: { service: Service }) {
             </div>
           )}
 
-          {service.slug === 'digital-marketing' && (
+          {slug === 'digital-marketing' && (
             <div className="marketing-preview">
               <div className="mini-dashboard-title"><div><span>Campaign center</span><strong>Growth performance</strong></div><i>Last 30 days</i></div>
               <div className="marketing-graph"><span>Qualified traffic</span><svg viewBox="0 0 420 150" preserveAspectRatio="none" aria-hidden="true"><path d="M0 130 C45 125 55 92 95 100 S145 122 180 75 S235 94 270 55 S330 70 360 34 S395 24 420 12" /><path className="area" d="M0 130 C45 125 55 92 95 100 S145 122 180 75 S235 94 270 55 S330 70 360 34 S395 24 420 12 V150 H0 Z" /></svg></div>
@@ -93,7 +95,7 @@ function ServiceDashboardVisual({ service }: { service: Service }) {
             </div>
           )}
 
-          {service.slug === 'wordpress' && (
+          {slug === 'wordpress' && (
             <div className="wordpress-preview">
               <div className="editor-sidebar"><strong>Pages</strong>{['Home', 'Services', 'Work', 'Insights'].map((page, index) => <span key={page} className={index === 0 ? 'active' : ''}>{page}<i /></span>)}</div>
               <div className="editor-canvas">
@@ -104,7 +106,7 @@ function ServiceDashboardVisual({ service }: { service: Service }) {
             </div>
           )}
 
-          {service.slug === 'automation-ai' && (
+          {slug === 'marketing-automation' && (
             <div className="automation-preview">
               <div className="ai-dashboard-title">
                 <div><span>Operations Overview</span><strong>Automation Control Center</strong></div>
@@ -180,34 +182,77 @@ function ServiceDashboardVisual({ service }: { service: Service }) {
             </div>
           )}
 
-          {service.slug === 'lead-generation' && (
-            <div className="pipeline-preview">
-              <div className="mini-dashboard-title"><div><span>Sales pipeline</span><strong>Qualified opportunities</strong></div><i>12 active</i></div>
-              <div className="pipeline-board">
+          {slug === 'youtube-automation' && (
+            <div className="youtube-preview">
+              <div className="mini-dashboard-title"><div><span>Channel studio</span><strong>YouTube command center</strong></div><i>Live</i></div>
+              <div className="youtube-stats">
                 {[
-                  ['Identified', 'Nova Labs', 'Axis Co.'],
-                  ['Contacted', 'Northstar', 'Vertex'],
-                  ['Qualified', 'BrightPath', ''],
-                ].map(([stage, first, second], index) => (
-                  <div key={stage}><span>{stage}<b>{index + 1}</b></span><article><i /><strong>{first}</strong><small>B2B Services</small></article>{second && <article><i /><strong>{second}</strong><small>Technology</small></article>}</div>
+                  ['Subscribers', '48.2K', '+1.2K'],
+                  ['Watch time', '312K', 'hrs/mo'],
+                  ['CTR', '6.4%', 'Above avg'],
+                ].map(([label, value, note]) => (
+                  <article key={label}><span>{label}</span><strong>{value}</strong><small>{note}</small></article>
                 ))}
+              </div>
+              <div className="youtube-body">
+                <div className="youtube-upload"><span>Upload pipeline</span>{['Script', 'Edit', 'Thumbnail', 'Schedule'].map((step, index) => <i key={step} className={index < 3 ? 'done' : 'active'}>{step}</i>)}</div>
+                <div className="youtube-grid">
+                  <span>Top videos</span>
+                  {[
+                    ['Product walkthrough', '24K views'],
+                    ['Client case study', '18K views'],
+                    ['How-to series #4', '12K views'],
+                  ].map(([title, views]) => (
+                    <article key={title}><i aria-hidden="true" /><div><strong>{title}</strong><small>{views}</small></div></article>
+                  ))}
+                </div>
               </div>
             </div>
           )}
 
-          {service.slug === 'saas' && (
-            <div className="data-preview">
-              <div className="mini-dashboard-title"><div><span>Subscription metrics</span><strong>Recurring revenue</strong></div><i>MRR +18%</i></div>
-              <div className="data-table">
-                <div className="data-head"><span>Plan</span><span>Customer</span><span>Status</span><span>MRR</span></div>
-                {[
-                  ['Pro', 'Nexa', 'Active', '$240'],
-                  ['Team', 'Orbit', 'Trial', '$0'],
-                  ['Scale', 'Vertex', 'Active', '$960'],
-                  ['Pro', 'Bright', 'Active', '$240'],
-                ].map((row) => <div key={row[1]}>{row.map((cell, index) => <span key={cell} className={index === 2 ? (cell === 'Active' ? 'verified' : 'review') : ''}>{cell}</span>)}</div>)}
+          {slug === 'graphic-design' && (
+            <div className="design-preview">
+              <div className="mini-dashboard-title"><div><span>Brand studio</span><strong>Design workspace</strong></div><i>v3.2</i></div>
+              <div className="design-board">
+                <section className="design-brand-kit">
+                  <span>Brand kit</span>
+                  <div className="design-logo-mark" aria-hidden="true" />
+                  <div className="design-swatches">{['#534AB7', '#0F9F8F', '#B6F36B', '#08111F'].map((color) => <i key={color} style={{ background: color }} />)}</div>
+                  <div className="design-type"><strong>Aa</strong><small>Plus Jakarta / Inter</small></div>
+                </section>
+                <section className="design-templates">
+                  <span>Content templates</span>
+                  {['Instagram post', 'LinkedIn banner', 'Pitch deck'].map((template, index) => (
+                    <article key={template} className={index === 0 ? 'active' : ''}><i aria-hidden="true" /><strong>{template}</strong><small>{index === 0 ? 'In review' : 'Approved'}</small></article>
+                  ))}
+                </section>
               </div>
-              <div className="data-footer"><span><i /> 1,284 active subscriptions</span><b>32 on trial</b></div>
+            </div>
+          )}
+
+          {slug === 'customer-support' && (
+            <div className="support-preview">
+              <div className="mini-dashboard-title"><div><span>Helpdesk</span><strong>Support inbox</strong></div><i>SLA 98%</i></div>
+              <div className="support-metrics">
+                {[
+                  ['Open', '14', 'Needs reply'],
+                  ['Pending', '6', 'Awaiting client'],
+                  ['Resolved', '128', 'This week'],
+                ].map(([label, value, note]) => (
+                  <article key={label}><span>{label}</span><strong>{value}</strong><small>{note}</small></article>
+                ))}
+              </div>
+              <div className="support-inbox">
+                <span>Live conversations</span>
+                {[
+                  ['Billing question — Acme Co.', '2m ago', 'urgent'],
+                  ['Onboarding help — Nova Labs', '8m ago', ''],
+                  ['Refund request — BrightPath', '14m ago', ''],
+                  ['Feature question — Vertex', 'Resolved', 'done'],
+                ].map(([subject, time, status]) => (
+                  <article key={subject} className={status || undefined}><i aria-hidden="true" /><div><strong>{subject}</strong><small>{time}</small></div>{status === 'urgent' && <b>Urgent</b>}{status === 'done' && <b className="resolved">Done</b>}</article>
+                ))}
+              </div>
             </div>
           )}
         </div>
@@ -299,7 +344,7 @@ function ServicesMobileAccordion({
 }
 
 export function CapabilityExplorer({ variant = 'directory' }: { variant?: 'directory' | 'dashboard' }) {
-  const [activeSlug, setActiveSlug] = useState<ServiceSlug>('web-development');
+  const [activeSlug, setActiveSlug] = useState<ServiceSlug>('full-stack-dev');
   const active = services.find((service) => service.slug === activeSlug)!;
   const Icon = active.icon;
 
@@ -323,11 +368,14 @@ export function CapabilityExplorer({ variant = 'directory' }: { variant?: 'direc
     <section className="section capability-section" id="capabilities">
       <div className="container">
         <Reveal>
-          <SectionHeading
-            eyebrow={ ''}
-            title={ 'Services we offer'}
-            description={'Select a capability to see how Tekzura connects delivery work with the result your team needs.'}
-          />
+          <div className="capability-section-head">
+            <SectionHeading
+              eyebrow={ ''}
+              title={ 'Services we offer'}
+              description={'Select a capability to see how Tekzura connects delivery work with the result your team needs.'}
+            />
+            <PackageBuilderButton label="Build custom package" variant="primary" />
+          </div>
         </Reveal>
         {variant === 'dashboard' ? (
           <>
@@ -443,11 +491,187 @@ const serviceProcessDetails = [
   },
 ];
 
+export type ProcessStageDetail = {
+  label: string;
+  description: string;
+  deliverables?: string[];
+  duration?: string;
+};
+
+const studioStages = ['Discover', 'Design', 'Build', 'Validate', 'Launch'];
+
+function DeliveryProcessTabs({
+  stages,
+  active,
+  onSelect,
+  slug,
+  onMoveStep,
+}: {
+  stages: string[];
+  active: number;
+  onSelect: (index: number) => void;
+  slug: string;
+  onMoveStep: (currentIndex: number, direction: number) => void;
+}) {
+  return (
+    <div className="service-process-tabs" role="tablist" aria-label="Delivery stages">
+      {stages.map((item, index) => (
+        <button
+          key={item}
+          id={`service-step-${slug}-${index}`}
+          type="button"
+          role="tab"
+          aria-selected={active === index}
+          aria-controls={`service-step-panel-${slug}`}
+          tabIndex={active === index ? 0 : -1}
+          onClick={() => onSelect(index)}
+          onKeyDown={(event) => {
+            if (event.key === 'ArrowRight' || event.key === 'ArrowDown') {
+              event.preventDefault();
+              onMoveStep(index, 1);
+            }
+            if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') {
+              event.preventDefault();
+              onMoveStep(index, -1);
+            }
+            if (event.key === 'Home') {
+              event.preventDefault();
+              onSelect(0);
+              document.getElementById(`service-step-${slug}-0`)?.focus();
+            }
+            if (event.key === 'End') {
+              event.preventDefault();
+              const last = stages.length - 1;
+              onSelect(last);
+              document.getElementById(`service-step-${slug}-${last}`)?.focus();
+            }
+          }}
+        >
+          <span>{String(index + 1).padStart(2, '0')}</span>
+          <strong>{item}</strong>
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function DeliveryProcessPanel({
+  stages,
+  active,
+  slug,
+  icon: Icon,
+  contextLabel,
+  details,
+}: {
+  stages: string[];
+  active: number;
+  slug: string;
+  icon: typeof Workflow;
+  contextLabel: string;
+  details?: ProcessStageDetail[];
+}) {
+  const step = stages[active];
+  const detail: ProcessStageDetail = details?.[active] ?? serviceProcessDetails[active];
+
+  return (
+    <div
+      className="service-process-panel"
+      id={`service-step-panel-${slug}`}
+      role="tabpanel"
+      aria-labelledby={`service-step-${slug}-${active}`}
+      key={`${slug}-${active}`}
+    >
+      <div className="service-process-copy">
+        <div className="service-process-icon"><Icon aria-hidden="true" /></div>
+        <p className="eyebrow">Stage {active + 1} of {stages.length}</p>
+        <span>{detail.label}</span>
+        <h3>{step}</h3>
+        <p>{detail.description}</p>
+        {detail.deliverables?.length ? (
+          <ul className="service-process-deliverables">
+            {detail.deliverables.map((item) => <li key={item}>{item}</li>)}
+          </ul>
+        ) : null}
+        <div className="service-process-status">
+          <span>{detail.duration ? detail.duration : 'Progress'}</span>
+          <strong>{detail.duration ? `Stage ${active + 1}` : `${Math.round(((active + 1) / stages.length) * 100)}%`}</strong>
+        </div>
+      </div>
+      <div className="service-process-visual" aria-hidden="true">
+        <div className="service-process-orbit">
+          <span><Icon /></span>
+          {stages.map((processStep, index) => (
+            <i key={processStep} className={index <= active ? 'complete' : ''}>
+              {index < active ? <Check /> : index + 1}
+            </i>
+          ))}
+        </div>
+        <strong>{detail.label}</strong>
+        <small>{contextLabel}</small>
+      </div>
+      <div className="service-process-progress" aria-hidden="true">
+        <i style={{ transform: `scaleX(${(active + 1) / stages.length})` }} />
+      </div>
+    </div>
+  );
+}
+
+export function StudioDeliveryProcess({
+  eyebrow = '',
+  title = 'How every Tekzura engagement moves forward',
+  description = 'From first conversation to launch and beyond, each project follows the same visible stages — with decisions, progress, and ownership kept close to the business goal.',
+  stageDetails,
+  className = '',
+}: {
+  eyebrow?: string;
+  title?: string;
+  description?: string;
+  stageDetails?: ProcessStageDetail[];
+  className?: string;
+}) {
+  const [active, setActive] = useState(0);
+  const slug = 'studio';
+
+  function moveStep(currentIndex: number, direction: number) {
+    const nextIndex = (currentIndex + direction + studioStages.length) % studioStages.length;
+    setActive(nextIndex);
+    document.getElementById(`service-step-${slug}-${nextIndex}`)?.focus();
+  }
+
+  return (
+    <section className={`section service-process-section ${className}`.trim()} id="delivery-process">
+      <div className="container">
+        <SectionHeading
+          eyebrow={eyebrow}
+          title={title}
+          description={description}
+          align="center"
+        />
+        <div className="service-process">
+          <DeliveryProcessTabs
+            stages={studioStages}
+            active={active}
+            onSelect={setActive}
+            slug={slug}
+            onMoveStep={moveStep}
+          />
+          <DeliveryProcessPanel
+            stages={studioStages}
+            active={active}
+            slug={slug}
+            icon={Workflow}
+            contextLabel="Tekzura Studio"
+            details={stageDetails}
+          />
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export function ServiceDeliveryProcess({ service }: { service: Service }) {
   const [active, setActive] = useState(0);
   const Icon = service.icon;
-  const step = service.process[active];
-  const detail = serviceProcessDetails[active];
 
   function moveStep(currentIndex: number, direction: number) {
     const nextIndex = (currentIndex + direction + service.process.length) % service.process.length;
@@ -465,78 +689,20 @@ export function ServiceDeliveryProcess({ service }: { service: Service }) {
           align="center"
         />
         <div className="service-process">
-          <div className="service-process-tabs" role="tablist" aria-label={`${service.title} delivery stages`}>
-            {service.process.map((item, index) => (
-              <button
-                key={item}
-                id={`service-step-${service.slug}-${index}`}
-                type="button"
-                role="tab"
-                aria-selected={active === index}
-                aria-controls={`service-step-panel-${service.slug}`}
-                tabIndex={active === index ? 0 : -1}
-                onClick={() => setActive(index)}
-                onKeyDown={(event) => {
-                  if (event.key === 'ArrowRight' || event.key === 'ArrowDown') {
-                    event.preventDefault();
-                    moveStep(index, 1);
-                  }
-                  if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') {
-                    event.preventDefault();
-                    moveStep(index, -1);
-                  }
-                  if (event.key === 'Home') {
-                    event.preventDefault();
-                    setActive(0);
-                    document.getElementById(`service-step-${service.slug}-0`)?.focus();
-                  }
-                  if (event.key === 'End') {
-                    event.preventDefault();
-                    const last = service.process.length - 1;
-                    setActive(last);
-                    document.getElementById(`service-step-${service.slug}-${last}`)?.focus();
-                  }
-                }}
-              >
-                <span>{String(index + 1).padStart(2, '0')}</span>
-                <strong>{item}</strong>
-              </button>
-            ))}
-          </div>
-          <div
-            className="service-process-panel"
-            id={`service-step-panel-${service.slug}`}
-            role="tabpanel"
-            aria-labelledby={`service-step-${service.slug}-${active}`}
-            key={`${service.slug}-${active}`}
-          >
-            <div className="service-process-copy">
-              <div className="service-process-icon"><Icon aria-hidden="true" /></div>
-              <p className="eyebrow">Stage {active + 1} of {service.process.length}</p>
-              <span>{detail.label}</span>
-              <h3>{step}</h3>
-              <p>{detail.description}</p>
-              <div className="service-process-status">
-                <span>Progress</span>
-                <strong>{Math.round(((active + 1) / service.process.length) * 100)}%</strong>
-              </div>
-            </div>
-            <div className="service-process-visual" aria-hidden="true">
-              <div className="service-process-orbit">
-                <span><Icon /></span>
-                {service.process.map((processStep, index) => (
-                  <i key={processStep} className={index <= active ? 'complete' : ''}>
-                    {index < active ? <Check /> : index + 1}
-                  </i>
-                ))}
-              </div>
-              <strong>{detail.label}</strong>
-              <small>{service.shortTitle}</small>
-            </div>
-            <div className="service-process-progress" aria-hidden="true">
-              <i style={{ transform: `scaleX(${(active + 1) / service.process.length})` }} />
-            </div>
-          </div>
+          <DeliveryProcessTabs
+            stages={service.process}
+            active={active}
+            onSelect={setActive}
+            slug={service.slug}
+            onMoveStep={moveStep}
+          />
+          <DeliveryProcessPanel
+            stages={service.process}
+            active={active}
+            slug={service.slug}
+            icon={Icon}
+            contextLabel={service.shortTitle}
+          />
         </div>
       </div>
     </section>

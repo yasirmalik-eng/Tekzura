@@ -38,7 +38,15 @@ const steps: { phase: Phase; title: string; text: string; icon: LucideIcon }[] =
   { phase: 'Scale',      icon: TrendingUp, title: 'Scaling',          text: 'We strengthen architecture, automation, and growth systems so the product scales users and revenue without breaking.' },
 ];
 
-export default function ProductStudioFramework() {
+export default function ProductStudioFramework({
+  eyebrow = '',
+  title = 'Our Proven Approach to Achieve Your Objectives',
+  description = 'Achieve your business goals with our successful Tekzura Methodology, renowned for its structured planning and consistent results.',
+}: {
+  eyebrow?: string;
+  title?: string;
+  description?: string;
+}) {
   const [active, setActive] = useState(0);
   const activeStep = steps[active];
   const ActiveIcon = activeStep.icon;
@@ -124,9 +132,9 @@ export default function ProductStudioFramework() {
       <div className="container">
         <Reveal>
           <SectionHeading
-            eyebrow=""
-            title="Our Proven Approach to Achieve Your Objectives"
-            description="Achieve your business goals with our successful Tekzura Methodology, renowned for its structured planning and consistent results."
+            eyebrow={eyebrow}
+            title={title}
+            description={description}
             align="center"
           />
           <div className="psf-legend" aria-label="Phase colour legend">

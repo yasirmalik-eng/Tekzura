@@ -70,10 +70,10 @@ export default function HomePage() {
       </section>
       <section className="trust-strip capability-rail" aria-label="Tekzura capabilities">
         <div className="container trust-grid">
-          <div><strong>Product & Web</strong><span>Fast, scalable digital experiences</span></div>
-          <div><strong>Automation & AI</strong><span>Connected operational workflows</span></div>
-          <div><strong>Commerce</strong><span>Clearer journeys from interest to sale</span></div>
-          <div><strong>Growth Systems</strong><span>Campaigns, leads, and useful reporting</span></div>
+          <div><strong>Development</strong><span>Full stack, WordPress & Shopify</span></div>
+          <div><strong>Marketing</strong><span>SEO, ads, YouTube & automation</span></div>
+          <div><strong>Design</strong><span>Brand, content & visual identity</span></div>
+          <div><strong>Support</strong><span>Live chat, VA & helpdesk ops</span></div>
         </div>
       </section>
 

@@ -1,19 +1,23 @@
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { ArrowRight, CalendarDays, ChevronDown, Menu, MessageSquare, PhoneCall, Send, X } from 'lucide-react';
+import { ArrowRight, CalendarDays, ChevronDown, Menu, MessageSquare, PhoneCall, Send, SlidersHorizontal, X } from 'lucide-react';
 import { Link, NavLink, Outlet, useLocation } from 'react-router-dom';
+import { PACKAGE_BUILDER_PATH } from '../../content/packageBuilder';
 import { services, siteConfig } from '../../content/site';
 import Chatbot, { OPEN_CHAT_EVENT } from './Chatbot';
+import ContactFab from './ContactFab';
+import ServicesDropdown from './ServicesDropdown';
 
 function openChat() {
   window.dispatchEvent(new CustomEvent(OPEN_CHAT_EVENT));
 }
 
 const navigation = [
-  { label: 'About', to: '/about' },
+  { label: 'Home', to: '/', end: true },
   { label: 'Work', to: '/work' },
+  { label: 'About', to: '/about' },
+  { label: 'Process', to: '/process' },
   { label: 'Insights', to: '/blog' },
-  { label: 'Talk to sales', to: '/contact' },
 ];
 
 function ScrollManager() {
@@ -40,11 +44,13 @@ export default function SiteShell() {
   const { pathname } = useLocation();
   const hasDedicatedConversion = (
     pathname === '/about' ||
+    pathname === '/process' ||
     pathname === '/work' ||
     pathname === '/blog' ||
     pathname.startsWith('/blog/') ||
     pathname === '/get-started' ||
     pathname === '/contact' ||
+    pathname === '/build-package' ||
     pathname.startsWith('/services')
   );
 
@@ -101,7 +107,7 @@ export default function SiteShell() {
         <div className="container header-inner">
           <Logo />
           <nav className="desktop-nav" aria-label="Primary navigation">
-            {navigation.slice(0, 1).map((item) => <NavLink key={item.to} to={item.to} className={({ isActive }) => (isActive ? 'active' : '')}>{item.label}</NavLink>)}
+            <NavLink to="/" end className={({ isActive }) => (isActive ? 'active' : '')}>Home</NavLink>
             <div className="services-nav" onMouseEnter={() => setServicesOpen(true)} onMouseLeave={() => setServicesOpen(false)}>
               <button
                 type="button"
@@ -112,7 +118,7 @@ export default function SiteShell() {
                 Services <ChevronDown aria-hidden="true" />
               </button>
             </div>
-            {navigation.slice(1).map((item) => (
+            {navigation.filter((item) => item.to !== '/').map((item) => (
               <NavLink key={item.to} to={item.to} className={({ isActive }) => (isActive ? 'active' : '')}>
                 {item.label}
               </NavLink>
@@ -122,10 +128,10 @@ export default function SiteShell() {
             <MessageSquare aria-hidden="true" />
             Ask Tekzura AI
           </button>
-          <a className="button button-primary header-cta" href={siteConfig.calendly} target="_blank" rel="noreferrer">
+          <Link className="button button-primary header-cta" to="/contact">
             <PhoneCall aria-hidden="true" />
-            Let's Talk
-          </a>
+            Talk to sales
+          </Link>
           <button
             className="icon-button menu-button"
             type="button"
@@ -143,28 +149,8 @@ export default function SiteShell() {
           onMouseEnter={() => setServicesOpen(true)}
           onMouseLeave={() => setServicesOpen(false)}
         >
-          <div className="container mega-menu-grid">
-            <div className="mega-menu-intro">
-              <p className="eyebrow">Capabilities</p>
-              <h2>Build, automate, and grow with one connected team.</h2>
-              <Link className="text-link" to="/services">Explore All Services <ArrowRight aria-hidden="true" /></Link>
-            </div>
-            <div className="mega-service-list">
-              {services.map((service) => {
-                const Icon = service.icon;
-                return (
-                  <Link key={service.slug} to={`/services/${service.slug}`}>
-                    <Icon aria-hidden="true" />
-                    <span><strong>{service.shortTitle}</strong><small>{service.eyebrow}</small></span>
-                    <ArrowRight aria-hidden="true" />
-                  </Link>
-                );
-              })}
-            </div>
-            <div className="mega-feature">
-              <img src="/case-automation.jpg" alt="" width="900" height="600" />
-              <div><span>Featured capability</span><strong>Automation systems that give teams time back.</strong></div>
-            </div>
+          <div className="container">
+            <ServicesDropdown onNavigate={() => setServicesOpen(false)} />
           </div>
         </div>
       </header>
@@ -178,17 +164,18 @@ export default function SiteShell() {
         >
           <nav className="container" aria-label="Mobile navigation">
             <span className="mobile-nav-label">Navigate</span>
-            {navigation.slice(0, 1).map((item) => <NavLink key={item.to} to={item.to}>{item.label}</NavLink>)}
+            <NavLink to="/" end>Home</NavLink>
             <Link to="/services">Services</Link>
-            <div className="mobile-service-links">
-              {services.slice(0, 4).map((service) => <Link key={service.slug} to={`/services/${service.slug}`}>{service.shortTitle}</Link>)}
-            </div>
-            {navigation.slice(1).map((item) => <NavLink key={item.to} to={item.to}>{item.label}</NavLink>)}
-            <Link className="mobile-nav-cta" to="/get-started">Start a Project</Link>
+            <Link className="mobile-nav-package" to={PACKAGE_BUILDER_PATH}>
+              <SlidersHorizontal aria-hidden="true" /> Build custom package
+            </Link>
+            {navigation.filter((item) => item.to !== '/').map((item) => (
+              <NavLink key={item.to} to={item.to}>{item.label}</NavLink>
+            ))}
+            <Link className="mobile-nav-cta" to="/contact">Talk to sales</Link>
             <button type="button" className="mobile-nav-chat" onClick={openChat}>
               <MessageSquare aria-hidden="true" /> Chat with us
             </button>
-            <a href={siteConfig.calendly} target="_blank" rel="noreferrer">Book a Strategy Call</a>
           </nav>
         </div>,
         document.body,
@@ -232,7 +219,7 @@ export default function SiteShell() {
           </div>
           <div>
             <h2>Services</h2>
-            {services.slice(0, 5).map((service) => (
+            {services.map((service) => (
               <Link key={service.slug} to={`/services/${service.slug}`}>{service.shortTitle}</Link>
             ))}
           </div>
@@ -250,6 +237,7 @@ export default function SiteShell() {
         </div>
       </footer>
 
+      <ContactFab />
       <Chatbot />
     </>
   );
