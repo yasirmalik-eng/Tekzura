@@ -18,7 +18,7 @@ export default function HomePage() {
     email: siteConfig.email,
     telephone: siteConfig.phone,
     address: siteConfig.address,
-    url: window.location.origin,
+    url: siteConfig.url,
   };
 
   return (

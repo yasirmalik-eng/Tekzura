@@ -5,7 +5,12 @@ import Seo from '../components/site/Seo';
 export default function NotFoundPage() {
   return (
     <>
-      <Seo title="Page Not Found" description="The requested Tekzura page could not be found." path={window.location.pathname} />
+      <Seo
+        title="Page Not Found"
+        description="The requested Tekzura page could not be found."
+        path="/404"
+        noIndex
+      />
       <section className="not-found">
         <div className="container">
           <p className="eyebrow">404</p>

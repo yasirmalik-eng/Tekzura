@@ -106,6 +106,7 @@ export const siteConfig = {
   phoneHref: '+923269379244',
   address: 'Bahawalpur, Pakistan',
   calendly: 'https://calendly.com/tekzura-info/30min',
+  url: 'https://tekzura.com',
   description:
     'Tekzura is a product development and growth studio helping teams launch digital products, automate operations, and build repeatable growth systems.',
 };
