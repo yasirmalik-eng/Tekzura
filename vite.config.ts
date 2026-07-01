@@ -4,7 +4,7 @@ import { defineConfig, loadEnv, type PluginOption } from 'vite';
 import react from '@vitejs/plugin-react-swc';
 import { insightCaseStudies } from './src/content/insights';
 import { services, siteConfig } from './src/content/site';
-import { DEFAULT_MODEL, generateChatReply, sanitizeContext, sanitizeMessages } from './server/gemini';
+import { DEFAULT_MODEL, generateChatReply, sanitizeContext, sanitizeMessages } from './api/lib/gemini';
 
 // Dev-only handler that mirrors the Vercel /api/chat Edge function so the
 // chatbot works under `npm run dev` without needing `vercel dev`.

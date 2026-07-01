@@ -235,6 +235,11 @@ export default function Chatbot() {
           return;
         }
 
+        if (res.status >= 500) {
+          setError('The chat service hit a server error. Please try again in a moment or use Request a callback below.');
+          return;
+        }
+
         if (shouldOpenCallback(res.status, reason, data?.fallbackToLead)) {
           openCallbackFallback();
           return;

@@ -1,6 +1,6 @@
-// Shared chat logic used by BOTH the Vercel serverless function (api/chat.ts) and the
-// local Vite dev middleware (vite.config.ts). Uses only the global fetch API so
-// it runs unchanged on the Edge runtime and on Node 18+.
+// Shared Gemini chat logic for the Vercel Edge function (api/chat.ts) and the
+// local Vite dev middleware (vite.config.ts). Uses only fetch so it runs on
+// Edge and Node 18+.
 
 export interface ChatMessage {
   role: 'user' | 'assistant';
