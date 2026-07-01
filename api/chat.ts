@@ -14,10 +14,9 @@ import { DEFAULT_MODEL, generateChatReply, sanitizeContext, sanitizeMessages } f
 
 export const config = { runtime: 'edge' };
 
-const env = (globalThis as { process?: { env?: Record<string, string | undefined> } }).process?.env ?? {};
-const MODEL = (env.GEMINI_MODEL || DEFAULT_MODEL).trim();
-const API_KEY = env.GEMINI_API_KEY?.trim();
-const ALLOWED_ORIGINS = (env.ALLOWED_ORIGINS || '')
+const MODEL = (process.env.GEMINI_MODEL || DEFAULT_MODEL).trim();
+const API_KEY = process.env.GEMINI_API_KEY?.trim();
+const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || '')
   .split(',')
   .map((value) => value.trim())
   .filter(Boolean);

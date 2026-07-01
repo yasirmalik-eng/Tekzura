@@ -10,7 +10,8 @@ export interface ChatMessage {
 export const MAX_MESSAGES = 20;
 export const MAX_CHARS = 4000;
 export const MAX_CONTEXT_CHARS = 24000;
-export const DEFAULT_MODEL = 'gemini-flash-latest';
+export const DEFAULT_MODEL = 'gemini-2.0-flash';
+const MODEL_FALLBACKS = ['gemini-2.0-flash', 'gemini-1.5-flash', 'gemini-flash-latest'] as const;
 
 const RETRYABLE_GEMINI_STATUSES = new Set([429, 503]);
 const MAX_GEMINI_ATTEMPTS = 3;
@@ -78,6 +79,37 @@ function shouldFallbackToLead(status: number, detail: string): boolean {
   return /quota|rate limit|high demand|unavailable|overloaded|resource exhausted/i.test(detail);
 }
 
+function extractReply(data: {
+  candidates?: {
+    content?: { parts?: { text?: string }[] };
+    finishReason?: string;
+  }[];
+}): { reply: string; finishReason?: string } {
+  const candidate = data.candidates?.[0];
+  const reply = candidate?.content?.parts?.map((part) => part.text || '').join('').trim() || '';
+  return { reply, finishReason: candidate?.finishReason };
+}
+
+async function callGemini(
+  endpoint: string,
+  systemText: string,
+  contents: { role: string; parts: { text: string }[] }[],
+) {
+  return fetch(endpoint, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      systemInstruction: { parts: [{ text: systemText }] },
+      contents,
+      generationConfig: { temperature: 0.45, maxOutputTokens: 1400, topP: 0.9 },
+      safetySettings: [
+        { category: 'HARM_CATEGORY_HARASSMENT', threshold: 'BLOCK_ONLY_HIGH' },
+        { category: 'HARM_CATEGORY_HATE_SPEECH', threshold: 'BLOCK_ONLY_HIGH' },
+      ],
+    }),
+  });
+}
+
 export async function generateChatReply(
   messages: ChatMessage[],
   context: string,
@@ -97,54 +129,68 @@ export async function generateChatReply(
     parts: [{ text: m.content }],
   }));
 
-  const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+  const modelsToTry = [...new Set([model, ...MODEL_FALLBACKS])];
 
   try {
-    for (let attempt = 1; attempt <= MAX_GEMINI_ATTEMPTS; attempt += 1) {
-      const response = await fetch(endpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          systemInstruction: { parts: [{ text: systemText }] },
-          contents,
-          generationConfig: { temperature: 0.45, maxOutputTokens: 1400, topP: 0.9 },
-          safetySettings: [
-            { category: 'HARM_CATEGORY_HARASSMENT', threshold: 'BLOCK_ONLY_HIGH' },
-            { category: 'HARM_CATEGORY_HATE_SPEECH', threshold: 'BLOCK_ONLY_HIGH' },
-          ],
-        }),
-      });
+    let lastError = 'The assistant is unavailable right now.';
 
-      if (!response.ok) {
-        const detail = await response.text().catch(() => '');
-        console.error('Gemini API error:', response.status, detail);
-        const friendly = parseGeminiError(detail);
-        if (RETRYABLE_GEMINI_STATUSES.has(response.status) && attempt < MAX_GEMINI_ATTEMPTS) {
-          await wait(attempt * 900);
-          continue;
+    for (const modelName of modelsToTry) {
+      const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
+
+      for (let attempt = 1; attempt <= MAX_GEMINI_ATTEMPTS; attempt += 1) {
+        const response = await callGemini(endpoint, systemText, contents);
+
+        if (!response.ok) {
+          const detail = await response.text().catch(() => '');
+          console.error('Gemini API error:', modelName, response.status, detail);
+          const friendly = parseGeminiError(detail) || lastError;
+          lastError = friendly;
+
+          if (response.status === 404) break;
+
+          if (RETRYABLE_GEMINI_STATUSES.has(response.status) && attempt < MAX_GEMINI_ATTEMPTS) {
+            await wait(attempt * 900);
+            continue;
+          }
+
+          return {
+            status: 502,
+            body: {
+              error: friendly,
+              fallbackToLead: shouldFallbackToLead(response.status, detail),
+            },
+          };
         }
-        return {
-          status: 502,
-          body: {
-            error: friendly || 'The assistant is unavailable right now.',
-            fallbackToLead: shouldFallbackToLead(response.status, detail),
-          },
+
+        const data = (await response.json()) as {
+          candidates?: {
+            content?: { parts?: { text?: string }[] };
+            finishReason?: string;
+          }[];
         };
+        const { reply, finishReason } = extractReply(data);
+
+        if (reply) {
+          return { status: 200, body: { reply } };
+        }
+
+        console.error('Gemini empty reply:', modelName, finishReason);
+        if (finishReason === 'SAFETY' || finishReason === 'RECITATION') {
+          return {
+            status: 502,
+            body: {
+              error: 'The assistant could not answer that safely. Please rephrase your question.',
+              fallbackToLead: false,
+            },
+          };
+        }
+
+        lastError = 'The assistant could not generate a reply.';
+        break;
       }
-
-      const data = (await response.json()) as {
-        candidates?: { content?: { parts?: { text?: string }[] } }[];
-      };
-      const reply = data.candidates?.[0]?.content?.parts?.map((p) => p.text).join('').trim();
-
-      if (!reply) {
-        return { status: 502, body: { error: 'The assistant could not generate a reply.', fallbackToLead: true } };
-      }
-
-      return { status: 200, body: { reply } };
     }
 
-    return { status: 502, body: { error: 'The assistant is unavailable right now.', fallbackToLead: true } };
+    return { status: 502, body: { error: lastError, fallbackToLead: true } };
   } catch (error) {
     console.error('Chat proxy failed:', error);
     return { status: 502, body: { error: 'The assistant is unavailable right now.', fallbackToLead: true } };

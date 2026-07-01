@@ -114,8 +114,8 @@ const mobileChatQuery = '(max-width: 640px)';
 
 function shouldOpenCallback(status: number, reason: string, fallbackToLead?: boolean) {
   if (fallbackToLead) return true;
-  if (status === 429 || status === 503 || status === 502) return true;
-  return /rate.?limit|quota|high demand|unavailable|busy|not configured|assistant is unavailable|could not generate/i.test(reason);
+  if (status === 429 || status === 503) return true;
+  return /rate.?limit|quota|high demand|unavailable|busy|not configured|assistant is unavailable/i.test(reason);
 }
 
 export default function Chatbot() {
@@ -214,24 +214,33 @@ export default function Chatbot() {
           messages: next.map((m) => ({ role: m.role, content: m.content })),
         }),
       });
-      const data = (await res.json().catch(() => null)) as {
-        reply?: string;
-        error?: string;
-        fallbackToLead?: boolean;
-      } | null;
+
+      const contentType = res.headers.get('content-type') || '';
+      const data = contentType.includes('application/json')
+        ? ((await res.json().catch(() => null)) as {
+            reply?: string;
+            error?: string;
+            fallbackToLead?: boolean;
+          } | null)
+        : null;
 
       if (!res.ok || !data?.reply) {
-        const reason = data?.error || `Chat request failed (${res.status})`;
+        const reason = data?.error || (contentType.includes('text/html')
+          ? 'Chat service is not reachable on this deployment.'
+          : `Chat request failed (${res.status})`);
+
         if (shouldOpenCallback(res.status, reason, data?.fallbackToLead)) {
           openCallbackFallback();
           return;
         }
-        throw new Error(reason);
+
+        setError(reason);
+        return;
       }
 
       setMessages((prev) => [...prev, { role: 'assistant', content: data.reply as string }]);
     } catch {
-      openCallbackFallback();
+      setError('Unable to reach the assistant right now. Please try again in a moment.');
     } finally {
       setSending(false);
     }
