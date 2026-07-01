@@ -41,6 +41,15 @@ function json(body: unknown, status: number, origin: string | null, allowedOrigi
   });
 }
 
+function readServerEnv(...names: string[]) {
+  const env = process.env as Record<string, string | undefined>;
+  for (const name of names) {
+    const value = env[name]?.trim();
+    if (value) return value;
+  }
+  return '';
+}
+
 export default async function handler(req: Request): Promise<Response> {
   const origin = req.headers.get('origin');
   const allowedOrigins = readAllowedOrigins();
@@ -53,8 +62,8 @@ export default async function handler(req: Request): Promise<Response> {
       return json({ error: 'Method not allowed' }, 405, origin, allowedOrigins);
     }
 
-    const apiKey = process.env.GEMINI_API_KEY?.trim();
-    const model = (process.env.GEMINI_MODEL || DEFAULT_MODEL).trim();
+    const apiKey = readServerEnv('GEMINI_API_KEY', 'GOOGLE_GEMINI_API_KEY');
+    const model = readServerEnv('GEMINI_MODEL') || DEFAULT_MODEL;
 
     if (!apiKey) {
       return json({ error: 'Chat is not configured.', fallbackToLead: true }, 503, origin, allowedOrigins);
