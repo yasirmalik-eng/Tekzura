@@ -7,7 +7,7 @@
 // Required in Vercel → Settings → Environment Variables (no VITE_ prefix):
 //   GEMINI_API_KEY
 // Optional:
-//   GEMINI_MODEL (defaults to gemini-2.0-flash)
+//   GEMINI_MODEL (defaults to gemini-2.5-flash)
 //   ALLOWED_ORIGINS (comma-separated; leave unset for same-origin only)
 
 import { DEFAULT_MODEL, generateChatReply, sanitizeContext, sanitizeMessages } from './lib/gemini';

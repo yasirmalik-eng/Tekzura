@@ -9,18 +9,55 @@ export interface ChatMessage {
 
 export const MAX_MESSAGES = 20;
 export const MAX_CHARS = 4000;
-export const MAX_CONTEXT_CHARS = 24000;
-export const DEFAULT_MODEL = 'gemini-2.0-flash';
-const MODEL_FALLBACKS = ['gemini-2.0-flash', 'gemini-1.5-flash', 'gemini-flash-latest'] as const;
+export const MAX_CONTEXT_CHARS = 12000;
+export const DEFAULT_MODEL = 'gemini-2.5-flash';
+const MODEL_FALLBACKS = ['gemini-2.5-flash-lite', 'gemini-2.0-flash-lite', 'gemini-1.5-flash'] as const;
+
+/** gemini-2.0-flash free-tier quota is 0 (deprecated); map to supported models. */
+const DEPRECATED_MODEL_ALIASES: Record<string, string> = {
+  'gemini-2.0-flash': 'gemini-2.5-flash',
+  'gemini-flash-latest': 'gemini-2.5-flash',
+};
 
 const RETRYABLE_GEMINI_STATUSES = new Set([429, 503]);
-const MAX_GEMINI_ATTEMPTS = 3;
+const MAX_GEMINI_ATTEMPTS = 2;
+
+function normalizeModel(model: string) {
+  const trimmed = model.trim();
+  return DEPRECATED_MODEL_ALIASES[trimmed] || trimmed;
+}
+
+function buildModelsToTry(preferred: string) {
+  const primary = normalizeModel(preferred || DEFAULT_MODEL);
+  return [...new Set([primary, DEFAULT_MODEL, ...MODEL_FALLBACKS])];
+}
+
+function isZeroQuotaError(detail: string) {
+  return /limit:\s*0\b/i.test(detail);
+}
+
+function parseRetryDelayMs(detail: string) {
+  try {
+    const payload = JSON.parse(detail) as {
+      error?: { details?: { '@type'?: string; retryDelay?: string }[] };
+    };
+    const retryInfo = payload.error?.details?.find((d) => d['@type']?.includes('RetryInfo'));
+    const match = /(\d+(?:\.\d+)?)s/.exec(retryInfo?.retryDelay || '');
+    if (match) return Math.min(Math.ceil(Number(match[1]) * 1000), 60000);
+  } catch {
+    /* ignore */
+  }
+  return 0;
+}
 
 function parseGeminiError(detail: string): string | null {
   try {
     const payload = JSON.parse(detail) as { error?: { message?: string; status?: string; code?: number } };
     const message = payload.error?.message?.trim();
     if (!message) return null;
+    if (isZeroQuotaError(detail)) {
+      return 'This Gemini model has no free-tier quota. Trying another model, or enable billing in Google AI Studio.';
+    }
     if (payload.error?.code === 429 || /quota|rate limit/i.test(message)) {
       return 'The AI service is rate-limited right now. Wait a moment and try again.';
     }
@@ -129,10 +166,11 @@ export async function generateChatReply(
     parts: [{ text: m.content }],
   }));
 
-  const modelsToTry = [...new Set([model, ...MODEL_FALLBACKS])];
+  const modelsToTry = buildModelsToTry(model);
 
   try {
     let lastError = 'The assistant is unavailable right now.';
+    let lastDetail = '';
 
     for (const modelName of modelsToTry) {
       const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
@@ -143,23 +181,19 @@ export async function generateChatReply(
         if (!response.ok) {
           const detail = await response.text().catch(() => '');
           console.error('Gemini API error:', modelName, response.status, detail);
+          lastDetail = detail;
           const friendly = parseGeminiError(detail) || lastError;
           lastError = friendly;
 
-          if (response.status === 404) break;
+          if (response.status === 404 || isZeroQuotaError(detail)) break;
 
           if (RETRYABLE_GEMINI_STATUSES.has(response.status) && attempt < MAX_GEMINI_ATTEMPTS) {
-            await wait(attempt * 900);
+            const retryMs = parseRetryDelayMs(detail) || attempt * 1200;
+            await wait(retryMs);
             continue;
           }
 
-          return {
-            status: 502,
-            body: {
-              error: friendly,
-              fallbackToLead: shouldFallbackToLead(response.status, detail),
-            },
-          };
+          break;
         }
 
         const data = (await response.json()) as {
@@ -190,7 +224,13 @@ export async function generateChatReply(
       }
     }
 
-    return { status: 502, body: { error: lastError, fallbackToLead: true } };
+    return {
+      status: 502,
+      body: {
+        error: lastError,
+        fallbackToLead: shouldFallbackToLead(429, lastDetail),
+      },
+    };
   } catch (error) {
     console.error('Chat proxy failed:', error);
     return { status: 502, body: { error: 'The assistant is unavailable right now.', fallbackToLead: true } };
