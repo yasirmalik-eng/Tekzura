@@ -1,4 +1,4 @@
-// Shared chat logic used by BOTH the Vercel Edge function (api/chat.ts) and the
+// Shared chat logic used by BOTH the Vercel serverless function (api/chat.ts) and the
 // local Vite dev middleware (vite.config.ts). Uses only the global fetch API so
 // it runs unchanged on the Edge runtime and on Node 18+.
 

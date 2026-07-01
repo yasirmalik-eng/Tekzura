@@ -1,75 +1,73 @@
-// Vercel Edge Function: /api/chat
+// Vercel Serverless Function: /api/chat
 //
 // Server-side proxy to the Google Gemini API. Keeps GEMINI_API_KEY private
-// (never shipped to the browser), applies light origin + size checks, and
-// delegates the actual model call to the shared logic in server/gemini.ts so
-// local dev (Vite middleware) and production behave identically.
+// (never shipped to the browser). Read env vars inside the handler so Vercel
+// does not inline empty values at build time (common Edge runtime issue).
 //
-// Required environment variable (set in Vercel project settings, NOT prefixed
-// with VITE_): GEMINI_API_KEY
-// Optional: GEMINI_MODEL (defaults to gemini-2.0-flash),
-//           ALLOWED_ORIGINS (comma-separated; defaults to allowing same-origin).
+// Required in Vercel → Settings → Environment Variables (no VITE_ prefix):
+//   GEMINI_API_KEY
+// Optional:
+//   GEMINI_MODEL (defaults to gemini-2.0-flash)
+//   ALLOWED_ORIGINS (comma-separated; leave unset for same-origin only)
 
+import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { DEFAULT_MODEL, generateChatReply, sanitizeContext, sanitizeMessages } from '../server/gemini';
 
-export const config = { runtime: 'edge' };
+export const config = {
+  runtime: 'nodejs',
+};
 
-const MODEL = (process.env.GEMINI_MODEL || DEFAULT_MODEL).trim();
-const API_KEY = process.env.GEMINI_API_KEY?.trim();
-const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || '')
-  .split(',')
-  .map((value) => value.trim())
-  .filter(Boolean);
+function readAllowedOrigins() {
+  return (process.env.ALLOWED_ORIGINS || '')
+    .split(',')
+    .map((value) => value.trim())
+    .filter(Boolean);
+}
 
-function corsHeaders(origin: string | null) {
+function setCors(res: VercelResponse, origin: string | undefined, allowedOrigins: string[]) {
   const allow =
-    ALLOWED_ORIGINS.length === 0 || (origin && ALLOWED_ORIGINS.includes(origin))
+    allowedOrigins.length === 0 || (origin && allowedOrigins.includes(origin))
       ? origin || '*'
-      : ALLOWED_ORIGINS[0];
-  return {
-    'Access-Control-Allow-Origin': allow,
-    'Access-Control-Allow-Methods': 'POST, OPTIONS',
-    'Access-Control-Allow-Headers': 'content-type',
-    Vary: 'Origin',
-  };
+      : allowedOrigins[0];
+  res.setHeader('Access-Control-Allow-Origin', allow);
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'content-type');
+  res.setHeader('Vary', 'Origin');
 }
 
-function json(body: unknown, status: number, origin: string | null) {
-  return new Response(JSON.stringify(body), {
-    status,
-    headers: { 'Content-Type': 'application/json', ...corsHeaders(origin) },
-  });
-}
-
-export default async function handler(req: Request): Promise<Response> {
-  const origin = req.headers.get('origin');
+export default async function handler(req: VercelRequest, res: VercelResponse) {
+  const origin = typeof req.headers.origin === 'string' ? req.headers.origin : undefined;
+  const allowedOrigins = readAllowedOrigins();
+  setCors(res, origin, allowedOrigins);
 
   if (req.method === 'OPTIONS') {
-    return new Response(null, { status: 204, headers: corsHeaders(origin) });
+    return res.status(204).end();
   }
   if (req.method !== 'POST') {
-    return json({ error: 'Method not allowed' }, 405, origin);
-  }
-  if (!API_KEY) {
-    return json({ error: 'Chat is not configured.', fallbackToLead: true }, 503, origin);
-  }
-  if (ALLOWED_ORIGINS.length > 0 && origin && !ALLOWED_ORIGINS.includes(origin)) {
-    return json({ error: 'Origin not allowed.' }, 403, origin);
+    return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  let payload: { messages?: unknown; context?: unknown };
-  try {
-    payload = (await req.json()) as { messages?: unknown; context?: unknown };
-  } catch {
-    return json({ error: 'Invalid JSON body.' }, 400, origin);
+  const apiKey = process.env.GEMINI_API_KEY?.trim();
+  const model = (process.env.GEMINI_MODEL || DEFAULT_MODEL).trim();
+
+  if (!apiKey) {
+    return res.status(503).json({ error: 'Chat is not configured.', fallbackToLead: true });
+  }
+  if (allowedOrigins.length > 0 && origin && !allowedOrigins.includes(origin)) {
+    return res.status(403).json({ error: 'Origin not allowed.' });
+  }
+
+  const payload = req.body as { messages?: unknown; context?: unknown } | undefined;
+  if (!payload || typeof payload !== 'object') {
+    return res.status(400).json({ error: 'Invalid JSON body.' });
   }
 
   const result = await generateChatReply(
     sanitizeMessages(payload.messages),
     sanitizeContext(payload.context),
-    API_KEY,
-    MODEL,
+    apiKey,
+    model,
   );
 
-  return json(result.body, result.status, origin);
+  return res.status(result.status).json(result.body);
 }
